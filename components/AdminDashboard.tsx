@@ -1,19 +1,11 @@
-
 import React, { useState } from 'react';
-import { useBookstore } from '../hooks/useBookstore';
-import AdminBooks from './AdminBooks';
-import AdminCollections from './AdminCollections';
-import AdminOrders from './AdminOrders';
-import AdminPageContent from './AdminPageContent';
+import AdminBooks from './AdminBooks.jsx';
+import AdminCollections from './AdminCollections.jsx';
+import AdminOrders from './AdminOrders.jsx';
+import AdminPageContent from './AdminPageContent.jsx';
 
-interface AdminDashboardProps {
-    bookstore: ReturnType<typeof useBookstore>;
-}
-
-type AdminTab = 'orders' | 'books' | 'collections' | 'content';
-
-const AdminDashboard: React.FC<AdminDashboardProps> = ({ bookstore }) => {
-    const [activeTab, setActiveTab] = useState<AdminTab>('orders');
+const AdminDashboard = ({ bookstore }) => {
+    const [activeTab, setActiveTab] = useState('orders');
     
     const renderTabContent = () => {
         switch (activeTab) {
@@ -30,7 +22,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ bookstore }) => {
         }
     };
     
-    const getTabClass = (tabName: AdminTab) => {
+    const getTabClass = (tabName) => {
         return `px-4 py-2 rounded-md text-sm font-medium transition-colors ${
             activeTab === tabName
                 ? 'bg-teal-600 text-white shadow'

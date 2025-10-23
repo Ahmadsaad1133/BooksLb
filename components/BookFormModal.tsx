@@ -1,16 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
-import { Book } from '../types';
-import { XIcon } from './Icons';
-import { toBase64 } from '../utils/imageUtils';
+import { XIcon } from './Icons.jsx';
+import { toBase64 } from '../utils/imageUtils.js';
 
-interface BookFormModalProps {
-  book: Omit<Book, 'id'> | Book | null;
-  onClose: () => void;
-  onSave: (book: Omit<Book, 'id'> | Book) => void;
-}
-
-const emptyBook: Omit<Book, 'id'> = {
+const emptyBook = {
     title: '',
     author: '',
     description: '',
@@ -21,9 +13,9 @@ const emptyBook: Omit<Book, 'id'> = {
     stock: 0,
 };
 
-const BookFormModal: React.FC<BookFormModalProps> = ({ book, onClose, onSave }) => {
+const BookFormModal = ({ book, onClose, onSave }) => {
   const [formData, setFormData] = useState(book || emptyBook);
-  const [coverPreview, setCoverPreview] = useState<string | null>(book?.coverImage || null);
+  const [coverPreview, setCoverPreview] = useState(book?.coverImage || null);
 
   useEffect(() => {
     if (book) {
@@ -35,12 +27,12 @@ const BookFormModal: React.FC<BookFormModalProps> = ({ book, onClose, onSave }) 
     }
   }, [book]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: name === 'price' || name === 'stock' ? parseFloat(value) || 0 : value }));
   };
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const base64 = await toBase64(file);
@@ -49,7 +41,7 @@ const BookFormModal: React.FC<BookFormModalProps> = ({ book, onClose, onSave }) 
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     onSave(formData);
     onClose();

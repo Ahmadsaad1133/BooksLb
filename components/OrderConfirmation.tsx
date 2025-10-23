@@ -1,12 +1,6 @@
 import React from 'react';
-import { Order } from '../types';
 
-interface OrderConfirmationProps {
-  lastOrder: Order;
-  onBackToStore: () => void;
-}
-
-const OrderConfirmation: React.FC<OrderConfirmationProps> = ({ lastOrder, onBackToStore }) => {
+const OrderConfirmation = ({ lastOrder, onBackToStore }) => {
   if (!lastOrder) {
     return (
         <div className="container mx-auto px-6 py-16 text-center">

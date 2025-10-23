@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 
-const ContactForm: React.FC = () => {
+const ContactForm = () => {
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         // In a real app, you'd handle form submission here.
         setSubmitted(true);

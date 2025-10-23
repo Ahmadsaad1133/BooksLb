@@ -1,22 +1,15 @@
-
-
-import { GoogleGenAI, Type } from "@google/genai";
-import { Book } from '../types';
-
-interface RecommendedBook {
-    title: string;
-}
+import { GoogleGenAI } from "@google/genai";
 
 export const getGeminiBookRecommendations = async (
-  query: string,
-  books: Book[]
-): Promise<RecommendedBook[]> => {
-  if (!process.env.API_KEY) {
-    console.error("API_KEY environment variable not set. Gemini features will not work.");
-    throw new Error("AI features are currently unavailable. Please check the configuration.");
+  query,
+  books,
+  apiKey
+) => {
+  if (!apiKey) {
+    throw new Error("API Key is missing. Please provide your Google AI API key to get recommendations.");
   }
 
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey });
 
   try {
     const bookList = books.map(b => `- "${b.title}" by ${b.author} (Genre: ${b.genre})`).join('\n');
@@ -39,12 +32,12 @@ export const getGeminiBookRecommendations = async (
       config: {
         responseMimeType: "application/json",
         responseSchema: {
-          type: Type.ARRAY,
+          type: 'ARRAY',
           items: {
-            type: Type.OBJECT,
+            type: 'OBJECT',
             properties: {
               title: {
-                type: Type.STRING,
+                type: 'STRING',
                 description: "The title of the recommended book.",
               },
             },
@@ -59,10 +52,14 @@ export const getGeminiBookRecommendations = async (
         return [];
     }
     const result = JSON.parse(jsonString);
-    return result as RecommendedBook[];
+    return result;
 
   } catch (error) {
     console.error("Error getting book recommendations from Gemini:", error);
-    throw new Error("Failed to get recommendations. Please try again.");
+    // Check for common API key errors
+    if (error.message && error.message.includes('API key not valid')) {
+        throw new Error("The provided API Key is not valid. Please check your key and try again.");
+    }
+    throw new Error("Failed to get recommendations. The AI service may be temporarily unavailable.");
   }
 };

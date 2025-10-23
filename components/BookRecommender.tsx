@@ -1,45 +1,46 @@
 import React, { useState } from 'react';
-import { Book } from '../types';
-import { getGeminiBookRecommendations } from '../services/geminiService';
-import BookCard from './BookCard';
-import { SparklesIcon, SearchIcon } from './Icons';
+import { getGeminiBookRecommendations } from '../services/geminiService.js';
+import BookCard from './BookCard.jsx';
+import { SparklesIcon, SearchIcon } from './Icons.jsx';
 
-interface BookRecommenderProps {
-  allBooks: Book[];
-  onSelectBook: (book: Book) => void;
-  onAddToCart: (book: Book) => void;
-}
-
-const BookRecommender: React.FC<BookRecommenderProps> = ({ allBooks, onSelectBook, onAddToCart }) => {
+const BookRecommender = ({ allBooks, onSelectBook, onAddToCart }) => {
   const [query, setQuery] = useState('');
-  const [recommendations, setRecommendations] = useState<Book[]>([]);
+  const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
   const [searched, setSearched] = useState(false);
 
-  const handleSearch = async (e: React.FormEvent) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
 
-    setIsLoading(true);
     setError(null);
     setSearched(true);
     setRecommendations([]);
 
     try {
-      if (!process.env.API_KEY) {
-        throw new Error("AI features are currently unavailable. Please check the configuration.");
+      let apiKey = sessionStorage.getItem('gemini-api-key');
+      if (!apiKey) {
+        apiKey = window.prompt("Please enter your Google AI API Key to use the recommender.\n\nYou can get a free key from Google AI Studio.");
+        if (!apiKey) {
+          setError("API Key is required to get AI recommendations.");
+          return;
+        }
+        sessionStorage.setItem('gemini-api-key', apiKey);
       }
-      const recommendedTitles = await getGeminiBookRecommendations(query, allBooks);
+      
+      setIsLoading(true);
+      const recommendedTitles = await getGeminiBookRecommendations(query, allBooks, apiKey);
       const recommendedBooks = allBooks.filter(book => 
         recommendedTitles.some(rec => rec.title === book.title)
       );
       setRecommendations(recommendedBooks);
     } catch (err) {
-        if (err instanceof Error) {
-            setError(err.message);
+        if (err.message.includes("API Key is not valid")) {
+            sessionStorage.removeItem('gemini-api-key'); // Clear invalid key
+            setError("The API Key is not valid. Please refresh and try again with a valid key.");
         } else {
-            setError('An unknown error occurred.');
+            setError(err.message);
         }
     } finally {
       setIsLoading(false);

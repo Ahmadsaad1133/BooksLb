@@ -1,9 +1,6 @@
-
-import { Book, Collection, PageContent } from './types';
-
 export const OWNER_PASSWORD = 'admin';
 
-export const INITIAL_BOOKS: Book[] = [
+export const INITIAL_BOOKS = [
     {
         id: 1,
         title: "The Midnight Library",
@@ -72,7 +69,7 @@ export const INITIAL_BOOKS: Book[] = [
     }
 ];
 
-export const INITIAL_COLLECTIONS: Collection[] = [
+export const INITIAL_COLLECTIONS = [
     {
         id: 1,
         name: "Bestsellers",
@@ -85,7 +82,7 @@ export const INITIAL_COLLECTIONS: Collection[] = [
     }
 ];
 
-export const INITIAL_PAGE_CONTENT: PageContent = {
+export const INITIAL_PAGE_CONTENT = {
     heroTitle: "Find Your Next Great Read",
     heroSubtitle: "Explore our curated collection of pop-up books and timeless classics. Adventure awaits between the pages.",
     heroImage: "https://images.unsplash.com/photo-1532012197267-da84d127e765?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1887&q=80",

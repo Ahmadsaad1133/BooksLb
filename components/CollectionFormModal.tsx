@@ -1,18 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
-import { Collection, Book } from '../types';
-import { XIcon } from './Icons';
+import { XIcon } from './Icons.jsx';
 
-interface CollectionFormModalProps {
-  collection: Omit<Collection, 'id'> | Collection | null;
-  allBooks: Book[];
-  onClose: () => void;
-  onSave: (collection: Omit<Collection, 'id'> | Collection) => void;
-}
-
-const CollectionFormModal: React.FC<CollectionFormModalProps> = ({ collection, allBooks, onClose, onSave }) => {
+const CollectionFormModal = ({ collection, allBooks, onClose, onSave }) => {
   const [name, setName] = useState('');
-  const [selectedBookIds, setSelectedBookIds] = useState<number[]>([]);
+  const [selectedBookIds, setSelectedBookIds] = useState([]);
 
   useEffect(() => {
     if (collection) {
@@ -21,16 +12,16 @@ const CollectionFormModal: React.FC<CollectionFormModalProps> = ({ collection, a
     }
   }, [collection]);
 
-  const handleBookToggle = (bookId: number) => {
+  const handleBookToggle = (bookId) => {
     setSelectedBookIds(prev =>
       prev.includes(bookId) ? prev.filter(id => id !== bookId) : [...prev, bookId]
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const collectionData = { ...collection, name, bookIds: selectedBookIds };
-    onSave(collectionData as Omit<Collection, 'id'> | Collection);
+    onSave(collectionData);
     onClose();
   };
 

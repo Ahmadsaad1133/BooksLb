@@ -1,14 +1,6 @@
-
 import React from 'react';
 
-interface HeroProps {
-  title: string;
-  subtitle: string;
-  image: string;
-  onShopNow: () => void;
-}
-
-const Hero: React.FC<HeroProps> = ({ title, subtitle, image, onShopNow }) => {
+const Hero = ({ title, subtitle, image, onShopNow }) => {
   return (
     <section 
       className="bg-cover bg-center h-[60vh] text-white flex items-center" 

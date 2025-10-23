@@ -1,48 +1,44 @@
-
 import React, { useState, useEffect } from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Hero from './components/Hero';
-import FeaturedBooks from './components/FeaturedBooks';
-import AboutSection from './components/AboutSection';
-import ContactForm from './components/ContactForm';
-import BookDetailModal from './components/BookDetailModal';
-import CartView from './components/CartView';
-import CheckoutForm from './components/CheckoutForm';
-import OrderConfirmation from './components/OrderConfirmation';
-import AdminDashboard from './components/AdminDashboard';
-import LoginModal from './components/LoginModal';
-import BookRecommender from './components/BookRecommender';
-import { useBookstore } from './hooks/useBookstore';
-import { Book, Order, CustomerDetails } from './types';
+import Header from './components/Header.jsx';
+import Footer from './components/Footer.jsx';
+import Hero from './components/Hero.jsx';
+import FeaturedBooks from './components/FeaturedBooks.jsx';
+import AboutSection from './components/AboutSection.jsx';
+import ContactForm from './components/ContactForm.jsx';
+import BookDetailModal from './components/BookDetailModal.jsx';
+import CartView from './components/CartView.jsx';
+import CheckoutForm from './components/CheckoutForm.jsx';
+import OrderConfirmation from './components/OrderConfirmation.jsx';
+import AdminDashboard from './components/AdminDashboard.jsx';
+import LoginModal from './components/LoginModal.jsx';
+import BookRecommender from './components/BookRecommender.jsx';
+import { useBookstore } from './hooks/useBookstore.js';
 
-type Page = 'home' | 'books' | 'about' | 'contact' | 'cart' | 'checkout' | 'confirmation' | 'admin';
-
-const App: React.FC = () => {
+const App = () => {
     const bookstore = useBookstore();
-    const [currentPage, setCurrentPage] = useState<Page>('home');
-    const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+    const [currentPage, setCurrentPage] = useState('home');
+    const [selectedBook, setSelectedBook] = useState(null);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-    const [lastOrder, setLastOrder] = useState<Order | null>(null);
+    const [lastOrder, setLastOrder] = useState(null);
 
     const featuredCollection = bookstore.collections.find(c => c.name === "Bestsellers");
     const featuredBooks = bookstore.books.filter(b => featuredCollection?.bookIds.includes(b.id));
 
-    const handleSelectBook = (book: Book) => {
+    const handleSelectBook = (book) => {
         setSelectedBook(book);
     };
 
-    const handleAddToCart = (book: Book, quantity: number = 1) => {
+    const handleAddToCart = (book, quantity = 1) => {
         bookstore.addToCart(book, quantity);
     };
 
-    const handlePlaceOrder = (customerDetails: CustomerDetails) => {
+    const handlePlaceOrder = (customerDetails) => {
         const order = bookstore.placeOrder(customerDetails);
         setLastOrder(order);
         setCurrentPage('confirmation');
     };
     
-    const handleLogin = (password: string) => {
+    const handleLogin = (password) => {
         const success = bookstore.login(password);
         if (success) {
             setIsLoginModalOpen(false);
@@ -121,7 +117,7 @@ const App: React.FC = () => {
                 />;
             case 'confirmation':
                 return <OrderConfirmation 
-                    lastOrder={lastOrder!}
+                    lastOrder={lastOrder}
                     onBackToStore={() => setCurrentPage('home')}
                 />;
             case 'admin':

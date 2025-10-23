@@ -1,17 +1,10 @@
-
 import React from 'react';
-import { useBookstore } from '../hooks/useBookstore';
-import { Order } from '../types';
 
-interface AdminOrdersProps {
-    bookstore: ReturnType<typeof useBookstore>;
-}
-
-const AdminOrders: React.FC<AdminOrdersProps> = ({ bookstore }) => {
+const AdminOrders = ({ bookstore }) => {
   const { orders, updateOrderStatus } = bookstore;
 
-  const handleStatusChange = (orderId: string, e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateOrderStatus(orderId, e.target.value as Order['status']);
+  const handleStatusChange = (orderId, e) => {
+    updateOrderStatus(orderId, e.target.value);
   };
 
   return (

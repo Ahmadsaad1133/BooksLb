@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
-import { Book } from '../types';
-import { XIcon } from './Icons';
+import { XIcon } from './Icons.jsx';
 
-interface BookDetailModalProps {
-  book: Book;
-  onClose: () => void;
-  onAddToCart: (book: Book, quantity: number) => void;
-}
-
-const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose, onAddToCart }) => {
+const BookDetailModal = ({ book, onClose, onAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = () => {

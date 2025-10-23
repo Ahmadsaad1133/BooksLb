@@ -1,14 +1,7 @@
 import React from 'react';
-import { Book } from '../types';
 
-interface BookCardProps {
-  book: Book;
-  onSelectBook: (book: Book) => void;
-  onAddToCart: (book: Book) => void;
-}
-
-const BookCard: React.FC<BookCardProps> = ({ book, onSelectBook, onAddToCart }) => {
-  const handleAddToCartClick = (e: React.MouseEvent) => {
+const BookCard = ({ book, onSelectBook, onAddToCart }) => {
+  const handleAddToCartClick = (e) => {
     e.stopPropagation();
     onAddToCart(book);
   };

@@ -1,16 +1,7 @@
-
 import React from 'react';
-import { Book } from '../types';
-import BookCard from './BookCard';
+import BookCard from './BookCard.jsx';
 
-interface FeaturedBooksProps {
-  title: string;
-  books: Book[];
-  onSelectBook: (book: Book) => void;
-  onAddToCart: (book: Book) => void;
-}
-
-const FeaturedBooks: React.FC<FeaturedBooksProps> = ({ title, books, onSelectBook, onAddToCart }) => {
+const FeaturedBooks = ({ title, books, onSelectBook, onAddToCart }) => {
   return (
     <section className="py-16 bg-stone-50">
       <div className="container mx-auto px-6">

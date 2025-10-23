@@ -1,17 +1,7 @@
 import React from 'react';
-import { CartItem } from '../types';
-import { TrashIcon } from './Icons';
+import { TrashIcon } from './Icons.jsx';
 
-interface CartViewProps {
-  cartItems: CartItem[];
-  cartTotal: number;
-  onUpdateQuantity: (bookId: number, quantity: number) => void;
-  onRemoveItem: (bookId: number) => void;
-  onCheckout: () => void;
-  onContinueShopping: () => void;
-}
-
-const CartView: React.FC<CartViewProps> = ({ cartItems, cartTotal, onUpdateQuantity, onRemoveItem, onCheckout, onContinueShopping }) => {
+const CartView = ({ cartItems, cartTotal, onUpdateQuantity, onRemoveItem, onCheckout, onContinueShopping }) => {
   if (cartItems.length === 0) {
     return (
       <div className="container mx-auto px-6 py-16 text-center">

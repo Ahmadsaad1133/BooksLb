@@ -1,10 +1,8 @@
-
 import { useState, useEffect, useMemo } from 'react';
-import { Book, CartItem, Order, CustomerDetails, Collection, PageContent } from '../types';
-import { INITIAL_BOOKS, INITIAL_COLLECTIONS, INITIAL_PAGE_CONTENT, OWNER_PASSWORD } from '../constants';
+import { INITIAL_BOOKS, INITIAL_COLLECTIONS, INITIAL_PAGE_CONTENT, OWNER_PASSWORD } from '../constants.js';
 
 // Helper to get data from localStorage
-const getFromStorage = <T>(key: string, defaultValue: T): T => {
+const getFromStorage = (key, defaultValue) => {
     try {
         const item = window.localStorage.getItem(key);
         return item ? JSON.parse(item) : defaultValue;
@@ -15,7 +13,7 @@ const getFromStorage = <T>(key: string, defaultValue: T): T => {
 };
 
 // Helper to set data to localStorage
-const setInStorage = <T>(key:string, value: T) => {
+const setInStorage = (key, value) => {
     try {
         window.localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
@@ -25,12 +23,12 @@ const setInStorage = <T>(key:string, value: T) => {
 
 
 export const useBookstore = () => {
-    const [books, setBooks] = useState<Book[]>(() => getFromStorage('books', INITIAL_BOOKS));
-    const [collections, setCollections] = useState<Collection[]>(() => getFromStorage('collections', INITIAL_COLLECTIONS));
-    const [cart, setCart] = useState<CartItem[]>(() => getFromStorage('cart', []));
-    const [orders, setOrders] = useState<Order[]>(() => getFromStorage('orders', []));
-    const [pageContent, setPageContent] = useState<PageContent>(() => getFromStorage('pageContent', INITIAL_PAGE_CONTENT));
-    const [isOwnerLoggedIn, setIsOwnerLoggedIn] = useState<boolean>(() => getFromStorage('isOwnerLoggedIn', false));
+    const [books, setBooks] = useState(() => getFromStorage('books', INITIAL_BOOKS));
+    const [collections, setCollections] = useState(() => getFromStorage('collections', INITIAL_COLLECTIONS));
+    const [cart, setCart] = useState(() => getFromStorage('cart', []));
+    const [orders, setOrders] = useState(() => getFromStorage('orders', []));
+    const [pageContent, setPageContent] = useState(() => getFromStorage('pageContent', INITIAL_PAGE_CONTENT));
+    const [isOwnerLoggedIn, setIsOwnerLoggedIn] = useState(() => getFromStorage('isOwnerLoggedIn', false));
 
     // Persist state to localStorage on change
     useEffect(() => { setInStorage('books', books); }, [books]);
@@ -41,7 +39,7 @@ export const useBookstore = () => {
     useEffect(() => { setInStorage('isOwnerLoggedIn', isOwnerLoggedIn); }, [isOwnerLoggedIn]);
 
     // Cart management
-    const addToCart = (book: Book, quantity: number = 1) => {
+    const addToCart = (book, quantity = 1) => {
         setCart(prevCart => {
             const existingItem = prevCart.find(item => item.id === book.id);
             if (existingItem) {
@@ -53,7 +51,7 @@ export const useBookstore = () => {
         });
     };
 
-    const updateCartQuantity = (bookId: number, quantity: number) => {
+    const updateCartQuantity = (bookId, quantity) => {
         if (quantity < 1) {
             removeFromCart(bookId);
             return;
@@ -63,7 +61,7 @@ export const useBookstore = () => {
         );
     };
 
-    const removeFromCart = (bookId: number) => {
+    const removeFromCart = (bookId) => {
         setCart(prevCart => prevCart.filter(item => item.id !== bookId));
     };
 
@@ -75,8 +73,8 @@ export const useBookstore = () => {
     const cartTotal = useMemo(() => cart.reduce((total, item) => total + item.price * item.quantity, 0), [cart]);
 
     // Order management
-    const placeOrder = (customer: CustomerDetails): Order => {
-        const newOrder: Order = {
+    const placeOrder = (customer) => {
+        const newOrder = {
             id: `order_${new Date().getTime()}_${Math.random().toString(36).substr(2, 9)}`,
             customer,
             items: cart,
@@ -89,12 +87,12 @@ export const useBookstore = () => {
         return newOrder;
     };
     
-    const updateOrderStatus = (orderId: string, status: Order['status']) => {
+    const updateOrderStatus = (orderId, status) => {
         setOrders(prev => prev.map(o => o.id === orderId ? {...o, status} : o));
     };
 
     // Auth management
-    const login = (password: string): boolean => {
+    const login = (password) => {
         if (password === OWNER_PASSWORD) {
             setIsOwnerLoggedIn(true);
             return true;
@@ -107,33 +105,33 @@ export const useBookstore = () => {
     };
 
     // Admin - Book management
-    const addBook = (book: Omit<Book, 'id'>) => {
+    const addBook = (book) => {
         setBooks(prev => [...prev, { ...book, id: Date.now() }]);
     };
     
-    const updateBook = (updatedBook: Book) => {
+    const updateBook = (updatedBook) => {
         setBooks(prev => prev.map(b => b.id === updatedBook.id ? updatedBook : b));
     };
 
-    const deleteBook = (bookId: number) => {
+    const deleteBook = (bookId) => {
         setBooks(prev => prev.filter(b => b.id !== bookId));
     };
 
     // Admin - Collection management
-    const addCollection = (collection: Omit<Collection, 'id'>) => {
+    const addCollection = (collection) => {
         setCollections(prev => [...prev, { ...collection, id: Date.now() }]);
     };
 
-    const updateCollection = (updatedCollection: Collection) => {
+    const updateCollection = (updatedCollection) => {
         setCollections(prev => prev.map(c => c.id === updatedCollection.id ? updatedCollection : c));
     };
 
-    const deleteCollection = (collectionId: number) => {
+    const deleteCollection = (collectionId) => {
         setCollections(prev => prev.filter(c => c.id !== collectionId));
     };
 
     // Admin - Page Content management
-    const updatePageContent = (newContent: PageContent) => {
+    const updatePageContent = (newContent) => {
         setPageContent(newContent);
     };
 

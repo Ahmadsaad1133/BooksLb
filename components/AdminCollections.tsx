@@ -1,20 +1,13 @@
-
 import React, { useState } from 'react';
-import { useBookstore } from '../hooks/useBookstore';
-import { Collection } from '../types';
-import CollectionFormModal from './CollectionFormModal';
-import { PlusIcon, PencilIcon, TrashIcon } from './Icons';
+import CollectionFormModal from './CollectionFormModal.jsx';
+import { PlusIcon, PencilIcon, TrashIcon } from './Icons.jsx';
 
-interface AdminCollectionsProps {
-    bookstore: ReturnType<typeof useBookstore>;
-}
-
-const AdminCollections: React.FC<AdminCollectionsProps> = ({ bookstore }) => {
+const AdminCollections = ({ bookstore }) => {
     const { collections, books, addCollection, updateCollection, deleteCollection } = bookstore;
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingCollection, setEditingCollection] = useState<Collection | null>(null);
+    const [editingCollection, setEditingCollection] = useState(null);
     
-    const handleOpenModal = (collection: Collection | null = null) => {
+    const handleOpenModal = (collection = null) => {
         setEditingCollection(collection);
         setIsModalOpen(true);
     };
@@ -24,7 +17,7 @@ const AdminCollections: React.FC<AdminCollectionsProps> = ({ bookstore }) => {
         setIsModalOpen(false);
     };
 
-    const handleSaveCollection = (collectionData: Omit<Collection, 'id'> | Collection) => {
+    const handleSaveCollection = (collectionData) => {
         if ('id' in collectionData) {
             updateCollection(collectionData);
         } else {

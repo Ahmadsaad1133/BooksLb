@@ -1,20 +1,13 @@
-
 import React, { useState } from 'react';
-import { useBookstore } from '../hooks/useBookstore';
-import { Book } from '../types';
-import BookFormModal from './BookFormModal';
-import { PlusIcon, PencilIcon, TrashIcon } from './Icons';
+import BookFormModal from './BookFormModal.jsx';
+import { PlusIcon, PencilIcon, TrashIcon } from './Icons.jsx';
 
-interface AdminBooksProps {
-    bookstore: ReturnType<typeof useBookstore>;
-}
-
-const AdminBooks: React.FC<AdminBooksProps> = ({ bookstore }) => {
+const AdminBooks = ({ bookstore }) => {
     const { books, addBook, updateBook, deleteBook } = bookstore;
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingBook, setEditingBook] = useState<Book | null>(null);
+    const [editingBook, setEditingBook] = useState(null);
 
-    const handleOpenModal = (book: Book | null = null) => {
+    const handleOpenModal = (book = null) => {
         setEditingBook(book);
         setIsModalOpen(true);
     };
@@ -24,7 +17,7 @@ const AdminBooks: React.FC<AdminBooksProps> = ({ bookstore }) => {
         setIsModalOpen(false);
     };
 
-    const handleSaveBook = (bookData: Omit<Book, 'id'> | Book) => {
+    const handleSaveBook = (bookData) => {
         if ('id' in bookData) {
             updateBook(bookData);
         } else {

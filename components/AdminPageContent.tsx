@@ -1,23 +1,17 @@
-
 import React, { useState } from 'react';
-import { useBookstore } from '../hooks/useBookstore';
-import { toBase64 } from '../utils/imageUtils';
+import { toBase64 } from '../utils/imageUtils.js';
 
-interface AdminPageContentProps {
-  bookstore: ReturnType<typeof useBookstore>;
-}
-
-const AdminPageContent: React.FC<AdminPageContentProps> = ({ bookstore }) => {
+const AdminPageContent = ({ bookstore }) => {
   const { pageContent, updatePageContent } = bookstore;
   const [content, setContent] = useState(pageContent);
   const [heroImagePreview, setHeroImagePreview] = useState(pageContent.heroImage);
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e) => {
     setContent({ ...content, [e.target.name]: e.target.value });
   };
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const base64 = await toBase64(file);

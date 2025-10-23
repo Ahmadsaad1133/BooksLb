@@ -1,20 +1,7 @@
 import React from 'react';
-import { BookOpenIcon, ShoppingCartIcon, UserIcon, ClipboardListIcon } from './Icons';
+import { BookOpenIcon, ShoppingCartIcon, UserIcon, ClipboardListIcon } from './Icons.jsx';
 
-interface HeaderProps {
-    onHomeClick: () => void;
-    onBooksClick: () => void;
-    onAboutClick: () => void;
-    onContactClick: () => void;
-    onCartClick: () => void;
-    onLoginClick: () => void;
-    onLogoutClick: () => void;
-    onAdminClick: () => void;
-    cartCount: number;
-    isOwnerLoggedIn: boolean;
-}
-
-const Header: React.FC<HeaderProps> = ({ 
+const Header = ({ 
     onHomeClick, onBooksClick, onAboutClick, onContactClick,
     onCartClick, onLoginClick, onLogoutClick, onAdminClick,
     cartCount, isOwnerLoggedIn 

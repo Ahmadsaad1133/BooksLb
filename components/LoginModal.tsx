@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
-import { XIcon } from './Icons';
+import { XIcon } from './Icons.jsx';
 
-interface LoginModalProps {
-  onClose: () => void;
-  onLogin: (password: string) => boolean;
-}
-
-const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLogin }) => {
+const LoginModal = ({ onClose, onLogin }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
     const success = onLogin(password);

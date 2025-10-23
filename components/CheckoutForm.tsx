@@ -1,21 +1,14 @@
 import React, { useState } from 'react';
-import { CustomerDetails, CartItem } from '../types';
 
-interface CheckoutFormProps {
-  cartItems: CartItem[];
-  cartTotal: number;
-  onPlaceOrder: (customerDetails: CustomerDetails) => void;
-}
+const CheckoutForm = ({ cartItems, cartTotal, onPlaceOrder }) => {
+  const [customer, setCustomer] = useState({ name: '', email: '', address: '', phone: '' });
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({ cartItems, cartTotal, onPlaceOrder }) => {
-  const [customer, setCustomer] = useState<CustomerDetails>({ name: '', email: '', address: '', phone: '' });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setCustomer(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     onPlaceOrder(customer);
   };
