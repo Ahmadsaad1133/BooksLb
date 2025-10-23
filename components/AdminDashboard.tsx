@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import AdminBooks from './AdminBooks.jsx';
-import AdminCollections from './AdminCollections.jsx';
-import AdminOrders from './AdminOrders.jsx';
-import AdminPageContent from './AdminPageContent.jsx';
+import AdminBooks from './AdminBooks';
+import AdminCollections from './AdminCollections';
+import AdminOrders from './AdminOrders';
+import AdminPageContent from './AdminPageContent';
 
 const AdminDashboard = ({ bookstore }) => {
     const [activeTab, setActiveTab] = useState('orders');
