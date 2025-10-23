@@ -1,0 +1,67 @@
+import React, { useState } from 'react';
+import { Book } from '../types';
+import { XIcon } from './Icons';
+
+interface BookDetailModalProps {
+  book: Book;
+  onClose: () => void;
+  onAddToCart: (book: Book, quantity: number) => void;
+}
+
+const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose, onAddToCart }) => {
+  const [quantity, setQuantity] = useState(1);
+
+  const handleAddToCart = () => {
+    onAddToCart(book, quantity);
+    onClose();
+  };
+
+  return (
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-70 z-50 flex justify-center items-center p-4"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto flex flex-col md:flex-row relative animate-fade-in"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 text-stone-500 hover:text-stone-800 transition z-10"
+        >
+          <XIcon className="h-6 w-6" />
+        </button>
+        <div className="w-full md:w-1/3">
+            <img src={book.coverImage} alt={book.title} className="w-full h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-t-none"/>
+        </div>
+        <div className="p-8 w-full md:w-2/3 flex flex-col">
+          <h2 className="text-4xl font-bold font-serif mb-2">{book.title}</h2>
+          <p className="text-xl text-stone-600 mb-4">by {book.author}</p>
+          <div className="flex items-center space-x-4 mb-6">
+            <span className="text-2xl font-bold text-teal-600">${book.price.toFixed(2)}</span>
+            <span className="bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded-full">{book.genre}</span>
+          </div>
+          <p className="text-stone-700 leading-relaxed mb-6 flex-grow">{book.description}</p>
+          <p className="text-sm text-stone-500 mb-6">Publisher: {book.publisher}</p>
+           <div className="flex items-center gap-4">
+              <input 
+                type="number"
+                min="1"
+                value={quantity}
+                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10)))}
+                className="w-20 px-3 py-2 border border-stone-300 rounded-md"
+              />
+              <button
+                onClick={handleAddToCart}
+                className="flex-grow px-8 py-3 bg-teal-600 text-white font-bold rounded-full hover:bg-teal-700 transition-transform transform hover:scale-105 duration-300 shadow-lg"
+              >
+                Add to Cart
+              </button>
+           </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BookDetailModal;
