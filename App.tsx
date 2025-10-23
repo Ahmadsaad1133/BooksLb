@@ -22,7 +22,10 @@ const App = () => {
     const [lastOrder, setLastOrder] = useState(null);
 
     const featuredCollection = bookstore.collections.find(c => c.name === "Bestsellers");
-    const featuredBooks = bookstore.books.filter(b => featuredCollection?.bookIds.includes(b.id));
+    const featuredIds = new Set((featuredCollection?.bookIds ?? []).map(id => String(id)));
+    const featuredBooks = featuredIds.size
+        ? bookstore.books.filter(b => featuredIds.has(String(b.id)))
+        : bookstore.books.slice(0, 4);
 
     const handleSelectBook = (book) => {
         setSelectedBook(book);
