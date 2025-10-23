@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import Header from './components/Header.jsx';
-import Footer from './components/Footer.jsx';
-import Hero from './components/Hero.jsx';
-import FeaturedBooks from './components/FeaturedBooks.jsx';
-import AboutSection from './components/AboutSection.jsx';
-import ContactForm from './components/ContactForm.jsx';
-import BookDetailModal from './components/BookDetailModal.jsx';
-import CartView from './components/CartView.jsx';
-import CheckoutForm from './components/CheckoutForm.jsx';
-import OrderConfirmation from './components/OrderConfirmation.jsx';
-import AdminDashboard from './components/AdminDashboard.jsx';
-import LoginModal from './components/LoginModal.jsx';
-import BookRecommender from './components/BookRecommender.jsx';
-import { useBookstore } from './hooks/useBookstore.js';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Hero from './components/Hero';
+import FeaturedBooks from './components/FeaturedBooks';
+import AboutSection from './components/AboutSection';
+import ContactForm from './components/ContactForm';
+import BookDetailModal from './components/BookDetailModal';
+import CartView from './components/CartView';
+import CheckoutForm from './components/CheckoutForm';
+import OrderConfirmation from './components/OrderConfirmation';
+import AdminDashboard from './components/AdminDashboard';
+import LoginModal from './components/LoginModal';
+import BookRecommender from './components/BookRecommender';
+import { useBookstore } from './hooks/useBookstore';
 
 const App = () => {
     const bookstore = useBookstore();
