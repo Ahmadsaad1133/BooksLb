@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpenIcon } from './Icons.jsx';
+import { BookOpenIcon } from './Icons';
 
 const Footer = () => {
   return (
