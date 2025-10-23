@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { XIcon } from './Icons.jsx';
+import { XIcon } from './Icons';
 
 const LoginModal = ({ onClose, onLogin }) => {
   const [password, setPassword] = useState('');
