@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { XIcon } from './Icons.jsx';
-import { toBase64 } from '../utils/imageUtils.js';
+import { XIcon } from './Icons';
+import { toBase64 } from '../utils/imageUtils';
 
 const emptyBook = {
     title: '',
