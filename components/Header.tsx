@@ -1,6 +1,5 @@
 import React from 'react';
-import { BookOpenIcon, ShoppingCartIcon, UserIcon, ClipboardListIcon } from './Icons.jsx';
-
+import { BookOpenIcon, ShoppingCartIcon, UserIcon, ClipboardListIcon } from './Icons';
 const Header = ({ 
     onHomeClick, onBooksClick, onAboutClick, onContactClick,
     onCartClick, onLoginClick, onLogoutClick, onAdminClick,
