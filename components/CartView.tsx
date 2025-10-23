@@ -1,6 +1,5 @@
 import React from 'react';
-import { TrashIcon } from './Icons.jsx';
-
+import { TrashIcon } from './Icons';
 const CartView = ({ cartItems, cartTotal, onUpdateQuantity, onRemoveItem, onCheckout, onContinueShopping }) => {
   if (cartItems.length === 0) {
     return (
