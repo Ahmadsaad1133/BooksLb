@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { INITIAL_BOOKS, INITIAL_COLLECTIONS, INITIAL_PAGE_CONTENT, OWNER_PASSWORD } from '../constants.js';
+import { INITIAL_BOOKS, INITIAL_COLLECTIONS, INITIAL_PAGE_CONTENT, OWNER_PASSWORD } from '../constants';
 
 // Helper to get data from localStorage
 const getFromStorage = (key, defaultValue) => {
