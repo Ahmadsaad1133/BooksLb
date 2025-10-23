@@ -8,13 +8,17 @@ const CollectionFormModal = ({ collection, allBooks, onClose, onSave }) => {
   useEffect(() => {
     if (collection) {
       setName(collection.name);
-      setSelectedBookIds(collection.bookIds);
+      setSelectedBookIds((collection.bookIds ?? []).map(id => String(id)));
+    } else {
+      setName('');
+      setSelectedBookIds([]);
     }
   }, [collection]);
 
   const handleBookToggle = (bookId) => {
+    const id = String(bookId);
     setSelectedBookIds(prev =>
-      prev.includes(bookId) ? prev.filter(id => id !== bookId) : [...prev, bookId]
+      prev.includes(id) ? prev.filter(existingId => existingId !== id) : [...prev, id]
     );
   };
 
@@ -46,7 +50,7 @@ const CollectionFormModal = ({ collection, allBooks, onClose, onSave }) => {
                 <input
                   type="checkbox"
                   id={`book-${book.id}`}
-                  checked={selectedBookIds.includes(book.id)}
+                  checked={selectedBookIds.includes(String(book.id))}
                   onChange={() => handleBookToggle(book.id)}
                   className="h-4 w-4 text-teal-600 border-stone-300 rounded focus:ring-teal-500"
                 />
