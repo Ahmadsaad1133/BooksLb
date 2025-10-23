@@ -16,6 +16,7 @@ const emptyBook = {
 const BookFormModal = ({ book, onClose, onSave }) => {
   const [formData, setFormData] = useState(book || emptyBook);
   const [coverPreview, setCoverPreview] = useState(book?.coverImage || null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (book) {
@@ -41,10 +42,17 @@ const BookFormModal = ({ book, onClose, onSave }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData);
-    onClose();
+    try {
+      setIsSaving(true);
+      await onSave(formData);
+      onClose();
+    } catch (error) {
+      console.error('Failed to save book', error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -98,7 +106,13 @@ const BookFormModal = ({ book, onClose, onSave }) => {
 
             <div className="mt-8 text-right">
                 <button type="button" onClick={onClose} className="px-6 py-2 mr-2 text-stone-700 rounded-md hover:bg-stone-100">Cancel</button>
-                <button type="submit" className="px-6 py-2 bg-teal-600 text-white font-bold rounded-md hover:bg-teal-700">Save Book</button>
+                <button
+                    type="submit"
+                    disabled={isSaving}
+                    className="px-6 py-2 bg-teal-600 text-white font-bold rounded-md hover:bg-teal-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                    {isSaving ? 'Saving...' : 'Save Book'}
+                </button>
             </div>
         </form>
       </div>
