@@ -1,5 +1,5 @@
 import React from 'react';
-import BookCard from './BookCard.jsx';
+import BookCard from './BookCard';
 
 const FeaturedBooks = ({ title, books, onSelectBook, onAddToCart }) => {
   return (
