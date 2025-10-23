@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { XIcon } from './Icons.jsx';
+import { XIcon } from './Icons';
 
 const CollectionFormModal = ({ collection, allBooks, onClose, onSave }) => {
   const [name, setName] = useState('');
