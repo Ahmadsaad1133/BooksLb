@@ -17,11 +17,11 @@ const AdminBooks = ({ bookstore }) => {
         setIsModalOpen(false);
     };
 
-    const handleSaveBook = (bookData) => {
+    const handleSaveBook = async (bookData) => {
         if ('id' in bookData) {
-            updateBook(bookData);
+            await updateBook(bookData);
         } else {
-            addBook(bookData);
+            await addBook(bookData);
         }
     };
     
@@ -54,7 +54,16 @@ const AdminBooks = ({ bookstore }) => {
                                 <td className="p-2">
                                     <div className="flex gap-2">
                                         <button onClick={() => handleOpenModal(book)} className="text-stone-600 hover:text-teal-600"><PencilIcon className="h-5 w-5" /></button>
-                                        <button onClick={() => window.confirm(`Delete ${book.title}?`) && deleteBook(book.id)} className="text-stone-600 hover:text-red-600"><TrashIcon className="h-5 w-5" /></button>
+                                        <button
+                                            onClick={async () => {
+                                                if (window.confirm(`Delete ${book.title}?`)) {
+                                                    await deleteBook(book.id);
+                                                }
+                                            }}
+                                            className="text-stone-600 hover:text-red-600"
+                                        >
+                                            <TrashIcon className="h-5 w-5" />
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
