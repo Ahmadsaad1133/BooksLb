@@ -1,11 +1,20 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { INITIAL_BOOKS, INITIAL_COLLECTIONS, INITIAL_PAGE_CONTENT, OWNER_PASSWORD } from '../constants';
+import type { Book, BookInput } from '../types';
+import {
+    addBook as addBookToFirestore,
+    updateBook as updateBookInFirestore,
+    deleteBook as deleteBookFromFirestore,
+    fetchBooks as fetchBooksFromFirestore,
+    subscribeToBooks,
+    seedBook as seedBookInFirestore,
+} from '../services/firebase';
 
 // Helper to get data from localStorage
-const getFromStorage = (key, defaultValue) => {
+const getFromStorage = <T,>(key: string, defaultValue: T): T => {
     try {
         const item = window.localStorage.getItem(key);
-        return item ? JSON.parse(item) : defaultValue;
+        return item ? (JSON.parse(item) as T) : defaultValue;
     } catch (error) {
         console.warn(`Error reading from localStorage key “${key}”:`, error);
         return defaultValue;
@@ -13,41 +22,98 @@ const getFromStorage = (key, defaultValue) => {
 };
 
 // Helper to set data to localStorage
-const setInStorage = (key, value) => {
+const setInStorage = (key: string, value: unknown) => {
     try {
         window.localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
         console.warn(`Error writing to localStorage key “${key}”:`, error);
     }
 };
+const normalizeBook = (book: Book): Book => ({
+    ...book,
+    id: String(book.id),
+});
 
+const initialBooks: Book[] = INITIAL_BOOKS.map((book) => normalizeBook(book as Book));
 
+const normalizeCollection = <T extends { bookIds?: Array<string | number> }>(collection: T) => ({
+    ...collection,
+    bookIds: (collection.bookIds ?? []).map((id) => String(id)),
+});
+
+const normalizeCartItem = <T extends { id: string | number }>(item: T) => ({
+    ...item,
+    id: String(item.id),
+});
+
+const normalizeOrder = <T extends { items?: Array<{ id: string | number }> }>(order: T) => ({
+    ...order,
+    items: (order.items ?? []).map((item) => normalizeCartItem(item)),
+});
 export const useBookstore = () => {
-    const [books, setBooks] = useState(() => getFromStorage('books', INITIAL_BOOKS));
-    const [collections, setCollections] = useState(() => getFromStorage('collections', INITIAL_COLLECTIONS));
-    const [cart, setCart] = useState(() => getFromStorage('cart', []));
-    const [orders, setOrders] = useState(() => getFromStorage('orders', []));
+    const [books, setBooks] = useState<Book[]>(initialBooks);
+    const [collections, setCollections] = useState(() =>
+        getFromStorage('collections', INITIAL_COLLECTIONS).map((collection) => normalizeCollection(collection)),
+    );
+    const [cart, setCart] = useState(() =>
+        getFromStorage('cart', []).map((item: { id: string | number }) => normalizeCartItem(item)),
+    );
+    const [orders, setOrders] = useState(() =>
+        getFromStorage('orders', []).map((order: { items?: Array<{ id: string | number }> }) => normalizeOrder(order)),
+    );
     const [pageContent, setPageContent] = useState(() => getFromStorage('pageContent', INITIAL_PAGE_CONTENT));
     const [isOwnerLoggedIn, setIsOwnerLoggedIn] = useState(() => getFromStorage('isOwnerLoggedIn', false));
-
+    const hasSeededRef = useRef(false);
     // Persist state to localStorage on change
-    useEffect(() => { setInStorage('books', books); }, [books]);
     useEffect(() => { setInStorage('collections', collections); }, [collections]);
     useEffect(() => { setInStorage('cart', cart); }, [cart]);
     useEffect(() => { setInStorage('orders', orders); }, [orders]);
     useEffect(() => { setInStorage('pageContent', pageContent); }, [pageContent]);
     useEffect(() => { setInStorage('isOwnerLoggedIn', isOwnerLoggedIn); }, [isOwnerLoggedIn]);
+    // Sync books with Firestore
+    useEffect(() => {
+        const unsubscribe = subscribeToBooks(
+            (bookList) => {
+                if (bookList.length > 0) {
+                    setBooks(bookList.map((book) => normalizeBook(book)));
+                } else if (!hasSeededRef.current) {
+                    setBooks(initialBooks);
+                } else {
+                    setBooks([]);
+                }
+            },
+            (error) => {
+                console.error('Failed to subscribe to Firestore books:', error);
+            },
+        );
 
+        (async () => {
+            try {
+                const existingBooks = await fetchBooksFromFirestore();
+                if (existingBooks.length === 0) {
+                    await Promise.all(initialBooks.map((book) => seedBookInFirestore(book)));
+                }
+                hasSeededRef.current = true;
+            } catch (error) {
+                console.error('Failed to initialize Firestore data:', error);
+            }
+        })();
+
+        return () => {
+            unsubscribe();
+        };
+    }, []);
     // Cart management
     const addToCart = (book, quantity = 1) => {
+        const normalizedBook = normalizeCartItem({ ...book });
         setCart(prevCart => {
-            const existingItem = prevCart.find(item => item.id === book.id);
+            const existingItem = prevCart.find(item => item.id === normalizedBook.id);
             if (existingItem) {
                 return prevCart.map(item =>
-                    item.id === book.id ? { ...item, quantity: item.quantity + quantity } : item
+                  item.id === normalizedBook.id ? { ...item, quantity: item.quantity + quantity } : item
                 );
             }
-            return [...prevCart, { ...book, quantity }];
+            return [...prevCart, { ...normalizedBook, quantity }];
         });
     };
 
@@ -56,13 +122,15 @@ export const useBookstore = () => {
             removeFromCart(bookId);
             return;
         }
+        const id = String(bookId);
         setCart(prevCart =>
-            prevCart.map(item => (item.id === bookId ? { ...item, quantity } : item))
+            prevCart.map(item => (item.id === id ? { ...item, quantity } : item))
         );
     };
 
     const removeFromCart = (bookId) => {
-        setCart(prevCart => prevCart.filter(item => item.id !== bookId));
+        const id = String(bookId);
+        setCart(prevCart => prevCart.filter(item => item.id !== id));
     };
 
     const clearCart = () => {
@@ -75,7 +143,7 @@ export const useBookstore = () => {
     // Order management
     const placeOrder = (customer) => {
         const newOrder = {
-            id: `order_${new Date().getTime()}_${Math.random().toString(36).substr(2, 9)}`,
+            id: `order_${new Date().getTime()}_${Math.random().toString(36).slice(2, 11)}`,
             customer,
             items: cart,
             total: cartTotal,
@@ -105,25 +173,43 @@ export const useBookstore = () => {
     };
 
     // Admin - Book management
-    const addBook = (book) => {
-        setBooks(prev => [...prev, { ...book, id: Date.now() }]);
+    const addBook = async (book: BookInput) => {
+        await addBookToFirestore({
+            ...book,
+            price: Number(book.price),
+            stock: Number(book.stock),
+        });
     };
     
-    const updateBook = (updatedBook) => {
-        setBooks(prev => prev.map(b => b.id === updatedBook.id ? updatedBook : b));
+    const updateBook = async (updatedBook: Book) => {
+        await updateBookInFirestore({
+            ...updatedBook,
+            id: String(updatedBook.id),
+            price: Number(updatedBook.price),
+            stock: Number(updatedBook.stock),
+        });
     };
 
-    const deleteBook = (bookId) => {
-        setBooks(prev => prev.filter(b => b.id !== bookId));
+    const deleteBook = async (bookId: string | number) => {
+        await deleteBookFromFirestore(bookId);
     };
 
     // Admin - Collection management
     const addCollection = (collection) => {
-        setCollections(prev => [...prev, { ...collection, id: Date.now() }]);
+        const normalized = {
+            ...collection,
+            id: Date.now(),
+            bookIds: (collection.bookIds ?? []).map(id => String(id)),
+        };
+        setCollections(prev => [...prev, normalized]);
     };
 
     const updateCollection = (updatedCollection) => {
-        setCollections(prev => prev.map(c => c.id === updatedCollection.id ? updatedCollection : c));
+        const normalized = {
+            ...updatedCollection,
+            bookIds: (updatedCollection.bookIds ?? []).map(id => String(id)),
+        };
+        setCollections(prev => prev.map(c => c.id === normalized.id ? normalized : c));
     };
 
     const deleteCollection = (collectionId) => {
