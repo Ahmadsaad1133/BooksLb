@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { toBase64 } from '../utils/imageUtils.js';
+import { toBase64 } from '../utils/imageUtils';
 
 const AdminPageContent = ({ bookstore }) => {
   const { pageContent, updatePageContent } = bookstore;
