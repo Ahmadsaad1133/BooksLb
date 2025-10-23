@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import CollectionFormModal from './CollectionFormModal.jsx';
-import { PlusIcon, PencilIcon, TrashIcon } from './Icons.jsx';
+import CollectionFormModal from './CollectionFormModal';
+import { PlusIcon, PencilIcon, TrashIcon } from './Icons';
 
 const AdminCollections = ({ bookstore }) => {
     const { collections, books, addCollection, updateCollection, deleteCollection } = bookstore;
