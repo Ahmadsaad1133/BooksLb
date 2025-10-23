@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { getGeminiBookRecommendations } from '../services/geminiService.js';
-import BookCard from './BookCard.jsx';
-import { SparklesIcon, SearchIcon } from './Icons.jsx';
+import { getGeminiBookRecommendations } from '../services/geminiService';
+import BookCard from './BookCard';
+import { SparklesIcon, SearchIcon } from './Icons';
 
 const BookRecommender = ({ allBooks, onSelectBook, onAddToCart }) => {
   const [query, setQuery] = useState('');
