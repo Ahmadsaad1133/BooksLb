@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { XIcon } from './Icons.jsx';
+import { XIcon } from './Icons';
 
 const BookDetailModal = ({ book, onClose, onAddToCart }) => {
   const [quantity, setQuantity] = useState(1);
