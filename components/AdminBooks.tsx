@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import BookFormModal from './BookFormModal.jsx';
-import { PlusIcon, PencilIcon, TrashIcon } from './Icons.jsx';
+import BookFormModal from './BookFormModal';
+import { PlusIcon, PencilIcon, TrashIcon } from './Icons';
 
 const AdminBooks = ({ bookstore }) => {
     const { books, addBook, updateBook, deleteBook } = bookstore;
