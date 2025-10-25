@@ -28,39 +28,39 @@ const AdminBooks = ({ bookstore }) => {
     return (
         <div>
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold font-serif">Manage Books</h2>
-                <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-teal-600 text-white font-bold rounded-md hover:bg-teal-700 flex items-center gap-2">
-                    <PlusIcon className="h-5 w-5" /> Add Book
+                <h2 className="text-2xl font-bold font-serif text-rose-700">Manage Desserts</h2>
+                <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-rose-500 text-white font-bold rounded-md hover:bg-rose-400 flex items-center gap-2">
+                    <PlusIcon className="h-5 w-5" /> Add Dessert
                 </button>
             </div>
              <div className="overflow-x-auto">
                 <table className="w-full text-left">
                     <thead>
-                        <tr className="border-b">
-                            <th className="p-2">Title</th>
-                            <th className="p-2">Author</th>
-                            <th className="p-2">Price</th>
-                            <th className="p-2">Stock</th>
-                            <th className="p-2">Actions</th>
+                        <tr className="border-b border-rose-100">
+                            <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Dessert</th>
+                            <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Flavor Notes</th>
+                            <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Price</th>
+                            <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Stock</th>
+                            <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {books.map(book => (
-                            <tr key={book.id} className="border-b hover:bg-stone-50">
-                                <td className="p-2 font-medium">{book.title}</td>
-                                <td className="p-2 text-stone-600">{book.author}</td>
-                                <td className="p-2">${book.price.toFixed(2)}</td>
-                                <td className="p-2">{book.stock}</td>
+                            <tr key={book.id} className="border-b border-rose-100 hover:bg-rose-50">
+                                <td className="p-2 font-medium text-rose-700">{book.title}</td>
+                                <td className="p-2 text-rose-600">{book.author}</td>
+                                <td className="p-2 text-rose-700">${book.price.toFixed(2)}</td>
+                                <td className="p-2 text-rose-700">{book.stock}</td>
                                 <td className="p-2">
                                     <div className="flex gap-2">
-                                        <button onClick={() => handleOpenModal(book)} className="text-stone-600 hover:text-teal-600"><PencilIcon className="h-5 w-5" /></button>
+                                        <button onClick={() => handleOpenModal(book)} className="text-rose-500 hover:text-rose-400"><PencilIcon className="h-5 w-5" /></button>
                                         <button
                                             onClick={async () => {
                                                 if (window.confirm(`Delete ${book.title}?`)) {
                                                     await deleteBook(book.id);
                                                 }
                                             }}
-                                            className="text-stone-600 hover:text-red-600"
+                                            className="text-rose-400 hover:text-rose-600"
                                         >
                                             <TrashIcon className="h-5 w-5" />
                                         </button>

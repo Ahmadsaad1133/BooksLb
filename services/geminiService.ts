@@ -12,18 +12,17 @@ export const getGeminiBookRecommendations = async (
   const ai = new GoogleGenAI({ apiKey });
 
   try {
-    const bookList = books.map(b => `- "${b.title}" by ${b.author} (Genre: ${b.genre})`).join('\n');
+    const bookList = books.map(b => `- "${b.title}" | Flavor notes: ${b.author} | Category: ${b.genre}`).join('\n');
     
     const prompt = `
-      You are an expert bookseller at a bookstore called "Pop up Books lb".
-      A customer is looking for a book. Their request is: "${query}".
+      You are the pastry concierge for an online dessert shop called "Deli Postres".
+      A guest has shared the following craving or event details: "${query}".
 
-      Here is a list of available books in our inventory:
+      Here is a list of desserts currently available:
       ${bookList}
-
-      Based on the customer's request, please recommend up to 3 books from the list.
-      Only recommend books that are on the list.
-      If no books from the list match the request, return an empty array.
+      Suggest up to 3 desserts from this list that best match the guest's request.
+      Only recommend desserts that appear in the list.
+      If nothing is a good fit, return an empty array.
     `;
 
     const response = await ai.models.generateContent({
@@ -55,11 +54,11 @@ export const getGeminiBookRecommendations = async (
     return result;
 
   } catch (error) {
-    console.error("Error getting book recommendations from Gemini:", error);
+    console.error("Error getting dessert recommendations from Gemini:", error);
     // Check for common API key errors
     if (error.message && error.message.includes('API key not valid')) {
         throw new Error("The provided API Key is not valid. Please check your key and try again.");
     }
-    throw new Error("Failed to get recommendations. The AI service may be temporarily unavailable.");
+    throw new Error("Failed to get dessert recommendations. The AI service may be temporarily unavailable.");
   }
 };

@@ -51,55 +51,55 @@ const AdminPageContent: React.FC<AdminPageContentProps> = ({ bookstore }) => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold font-serif mb-4">Manage Page Content</h2>
+      <h2 className="text-2xl font-bold font-serif mb-4 text-rose-700">Manage Page Content</h2>
       <div className="space-y-6">
         <div>
-          <label htmlFor="heroTitle" className="block text-stone-700 font-medium mb-1">Hero Title</label>
+          <label htmlFor="heroTitle" className="block text-rose-700 font-medium mb-1">Hero Title</label>
           <input
             type="text"
             id="heroTitle"
             name="heroTitle"
             value={content.heroTitle}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-stone-300 rounded-md"
+            className="w-full px-4 py-2 border border-rose-200 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-400"
           />
         </div>
         <div>
-          <label htmlFor="heroSubtitle" className="block text-stone-700 font-medium mb-1">Hero Subtitle</label>
+          <label htmlFor="heroSubtitle" className="block text-rose-700 font-medium mb-1">Hero Subtitle</label>
           <input
             type="text"
             id="heroSubtitle"
             name="heroSubtitle"
             value={content.heroSubtitle}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-stone-300 rounded-md"
+            className="w-full px-4 py-2 border border-rose-200 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-400"
           />
         </div>
         <div>
-          <label className="block text-stone-700 font-medium mb-1">Hero Image</label>
+          <label className="block text-rose-700 font-medium mb-1">Hero Image</label>
            <input
             type="file"
             onChange={handleImageChange}
             accept="image/*"
-            className="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+            className="w-full text-sm text-rose-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-rose-600 hover:file:bg-rose-100"
           />
         </div>
         <div>
-          <label htmlFor="aboutContent" className="block text-stone-700 font-medium mb-1">About Us Content</label>
+          <label htmlFor="aboutContent" className="block text-rose-700 font-medium mb-1">Our Story Content</label>
           <textarea
             id="aboutContent"
             name="aboutContent"
             value={content.aboutContent}
             onChange={handleChange}
             rows={6}
-            className="w-full px-4 py-2 border border-stone-300 rounded-md"
+            className="w-full px-4 py-2 border border-rose-200 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-400"
           />
         </div>
         <div className="text-right">
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="px-6 py-2 bg-teal-600 text-white font-bold rounded-md hover:bg-teal-700 disabled:bg-stone-400"
+            className="px-6 py-2 bg-rose-500 text-white font-bold rounded-md hover:bg-rose-400 disabled:bg-rose-200"
           >
             {isSaving ? 'Saving...' : 'Save Changes'}
           </button>

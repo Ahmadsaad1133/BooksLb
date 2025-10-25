@@ -51,10 +51,10 @@ const BookRecommender = ({ allBooks, onSelectBook, onAddToCart }) => {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-6 max-w-4xl">
         <div className="text-center mb-10">
-          <SparklesIcon className="h-10 w-10 mx-auto text-teal-500 mb-2" />
-          <h2 className="text-4xl font-bold font-serif">AI Book Recommender</h2>
-          <p className="text-stone-600 mt-2">
-            Tell us what you're in the mood for, and our AI will find the perfect book for you!
+          <SparklesIcon className="h-10 w-10 mx-auto text-rose-500 mb-2" />
+          <h2 className="text-4xl font-bold font-serif text-rose-700">AI Dessert Concierge</h2>
+          <p className="text-rose-700/80 mt-2">
+            Share your cravings and our AI will suggest the perfect treats from our kitchen.
           </p>
         </div>
         
@@ -63,13 +63,13 @@ const BookRecommender = ({ allBooks, onSelectBook, onAddToCart }) => {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="e.g., 'a fast-paced sci-fi thriller' or 'a cozy memoir'"
-            className="w-full px-5 py-3 border border-stone-300 rounded-full focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
+            placeholder="e.g., 'tropical flavors for a party' or 'something chocolatey but light'"
+            className="w-full px-5 py-3 border border-rose-200 rounded-full focus:ring-2 focus:ring-rose-400 focus:border-rose-400 transition"
             disabled={isLoading}
           />
           <button
             type="submit"
-            className="px-6 py-3 bg-teal-600 text-white font-bold rounded-full hover:bg-teal-700 transition-transform transform hover:scale-105 duration-300 shadow-lg disabled:bg-stone-400 disabled:cursor-not-allowed flex items-center justify-center"
+            className="px-6 py-3 bg-rose-500 text-white font-bold rounded-full hover:bg-rose-400 transition-transform transform hover:scale-105 duration-300 shadow-lg disabled:bg-rose-200 disabled:cursor-not-allowed flex items-center justify-center"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -80,14 +80,14 @@ const BookRecommender = ({ allBooks, onSelectBook, onAddToCart }) => {
           </button>
         </form>
 
-        {isLoading && <p className="text-center text-stone-600">Finding your next read...</p>}
+        {isLoading && <p className="text-center text-rose-700/80">Whipping up the perfect suggestion...</p>}
         {error && <p className="text-center text-red-600 bg-red-100 p-3 rounded-md">{error}</p>}
         
         {searched && !isLoading && !error && (
             <div>
                 {recommendations.length > 0 ? (
                     <>
-                        <h3 className="text-2xl font-bold font-serif text-center mb-8">Here are our recommendations for you:</h3>
+                        <h3 className="text-2xl font-bold font-serif text-center mb-8 text-rose-700">Here are our dessert recommendations for you:</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
                             {recommendations.map(book => (
                                 <BookCard key={book.id} book={book} onSelectBook={onSelectBook} onAddToCart={onAddToCart}/>
@@ -95,8 +95,8 @@ const BookRecommender = ({ allBooks, onSelectBook, onAddToCart }) => {
                         </div>
                     </>
                 ) : (
-                    <p className="text-center text-stone-600 bg-stone-100 p-4 rounded-md">
-                        We couldn't find a perfect match in our current collection. Try a different search!
+                    <p className="text-center text-rose-700/80 bg-rose-50 border border-rose-100 p-4 rounded-md">
+                        We couldn't find the perfect match just yet. Try different flavors or tell us more about your event!
                     </p>
                 )}
             </div>

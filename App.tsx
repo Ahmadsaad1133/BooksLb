@@ -21,7 +21,7 @@ const App = () => {
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [lastOrder, setLastOrder] = useState(null);
 
-    const featuredCollection = bookstore.collections.find(c => c.name === "Bestsellers");
+    const featuredCollection = bookstore.collections.find(c => c.name === "Bestsellers" || c.name === "Chef's Favorites");
     const featuredIds = new Set((featuredCollection?.bookIds ?? []).map(id => String(id)));
     const featuredBooks = featuredIds.size
         ? bookstore.books.filter(b => featuredIds.has(String(b.id)))
@@ -73,10 +73,10 @@ const App = () => {
                             image={bookstore.pageContent.heroImage}
                             onShopNow={() => setCurrentPage('books')}
                         />
-                        <FeaturedBooks 
-                            title="Bestsellers" 
-                            books={featuredBooks} 
-                            onSelectBook={handleSelectBook} 
+                        <FeaturedBooks
+                            title="Chef's Favorites"
+                            books={featuredBooks}
+                            onSelectBook={handleSelectBook}
                             onAddToCart={handleAddToCart}
                         />
                         <BookRecommender 
@@ -91,10 +91,10 @@ const App = () => {
             case 'books':
                  return (
                     <div className="container mx-auto px-6 py-12">
-                        <FeaturedBooks 
-                            title="All Books" 
-                            books={bookstore.books} 
-                            onSelectBook={handleSelectBook} 
+                        <FeaturedBooks
+                            title="All Desserts"
+                            books={bookstore.books}
+                            onSelectBook={handleSelectBook}
                             onAddToCart={handleAddToCart}
                         />
                     </div>
@@ -133,7 +133,7 @@ const App = () => {
     };
     
     return (
-        <div className="font-sans bg-stone-50 text-stone-900">
+        <div className="font-sans bg-rose-50 text-rose-950">
             <Header
                 onHomeClick={() => setCurrentPage('home')}
                 onBooksClick={() => setCurrentPage('books')}

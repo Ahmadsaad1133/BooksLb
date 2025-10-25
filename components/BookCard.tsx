@@ -7,27 +7,27 @@ const BookCard = ({ book, onSelectBook, onAddToCart }) => {
   };
     
   return (
-    <div 
-      className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 cursor-pointer flex flex-col group"
+    <div
+      className="bg-white border border-rose-100 rounded-xl shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 cursor-pointer flex flex-col group"
       onClick={() => onSelectBook(book)}
     >
       <div className="relative">
         <img src={book.coverImage} alt={book.title} className="w-full h-80 object-cover" />
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-            <span className="text-white font-bold border-2 border-white rounded-full px-4 py-2">View Details</span>
+            <span className="text-white font-bold border-2 border-white rounded-full px-4 py-2">View Dessert</span>
         </div>
       </div>
       <div className="p-4 flex flex-col flex-grow">
-        <h3 className="text-lg font-bold font-serif truncate" title={book.title}>{book.title}</h3>
-        <p className="text-stone-600 text-sm mt-1">{book.author}</p>
+        <h3 className="text-lg font-bold font-serif text-rose-700 truncate" title={book.title}>{book.title}</h3>
+        <p className="text-rose-600 text-sm mt-1">{book.author}</p>
         <div className="mt-auto pt-4 flex justify-between items-center">
-            <p className="text-lg font-bold text-teal-600">${book.price.toFixed(2)}</p>
+            <p className="text-lg font-bold text-rose-600">${book.price.toFixed(2)}</p>
             <button
                 onClick={handleAddToCartClick}
-                className="bg-teal-50 text-teal-700 hover:bg-teal-100 text-xs font-bold py-2 px-3 rounded-full transition-colors duration-200"
+                className="bg-rose-100 text-rose-700 hover:bg-rose-200 text-xs font-bold py-2 px-3 rounded-full transition-colors duration-200"
                 aria-label={`Add ${book.title} to cart`}
             >
-                Add to Cart
+                Add to Order
             </button>
         </div>
       </div>
