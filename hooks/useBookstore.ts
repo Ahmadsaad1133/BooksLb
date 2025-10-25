@@ -69,7 +69,7 @@ export const useBookstore = () => {
         getFromStorage('orders', []).map((order: { items?: Array<{ id: string | number }> }) => normalizeOrder(order)),
     );
     const [pageContent, setPageContent] = useState<PageContent>(() => getFromStorage('pageContent', INITIAL_PAGE_CONTENT));
-    const [isOwnerLoggedIn, setIsOwnerLoggedIn] = useState(() => getFromStorage('isOwnerLoggedIn', false));
+    const [isOwnerLoggedIn, setIsOwnerLoggedIn] = useState(false);
     const hasSeededRef = useRef(false);
     const previousPageContentRef = useRef<PageContent | null>(null);
     // Persist state to localStorage on change
@@ -78,7 +78,6 @@ export const useBookstore = () => {
     useEffect(() => { setInStorage('cart', cart); }, [cart]);
     useEffect(() => { setInStorage('orders', orders); }, [orders]);
     useEffect(() => { setInStorage('pageContent', pageContent); }, [pageContent]);
-    useEffect(() => { setInStorage('isOwnerLoggedIn', isOwnerLoggedIn); }, [isOwnerLoggedIn]);
     useEffect(() => {
         let unsubscribe: ReturnType<typeof subscribeToPageContent> | undefined;
 

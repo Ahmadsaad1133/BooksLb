@@ -20,6 +20,11 @@ const BookCard = ({ book, onSelectBook, onAddToCart }) => {
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-lg font-bold font-serif text-rose-700 truncate" title={book.title}>{book.title}</h3>
         <p className="text-rose-600 text-sm mt-1">{book.author}</p>
+        {book.genre && (
+            <span className="mt-3 inline-flex w-max items-center rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-rose-600">
+                {book.genre}
+            </span>
+        )}
         <div className="mt-auto pt-4 flex justify-between items-center">
             <p className="text-lg font-bold text-rose-600">${book.price.toFixed(2)}</p>
             <button

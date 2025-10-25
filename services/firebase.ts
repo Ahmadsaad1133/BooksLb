@@ -37,9 +37,10 @@ const booksCollection = collection(db, 'books');
 const pageContentDocRef = doc(db, 'pageContent', 'home');
 const mapSnapshotToBook = (snapshot: QueryDocumentSnapshot<DocumentData>): Book => {
     const data = snapshot.data();
-
+    const rawId = typeof data.id === 'string' ? data.id : '';
+    const normalizedId = rawId.trim().length > 0 ? rawId : snapshot.id;
     return {
-        id: data.id ?? snapshot.id,
+        id: normalizedId,
         title: data.title ?? '',
         author: data.author ?? '',
         description: data.description ?? '',

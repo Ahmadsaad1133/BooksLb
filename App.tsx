@@ -12,6 +12,7 @@ import OrderConfirmation from './components/OrderConfirmation';
 import AdminDashboard from './components/AdminDashboard';
 import LoginModal from './components/LoginModal';
 import BookRecommender from './components/BookRecommender';
+import CollectionsShowcase from './components/CollectionsShowcase';
 import { useBookstore } from './hooks/useBookstore';
 
 const App = () => {
@@ -78,6 +79,11 @@ const App = () => {
                             books={featuredBooks}
                             onSelectBook={handleSelectBook}
                             onAddToCart={handleAddToCart}
+                        />
+                        <CollectionsShowcase
+                            collections={bookstore.collections}
+                            books={bookstore.books}
+                            onExploreCollection={() => setCurrentPage('books')}
                         />
                         <BookRecommender 
                             allBooks={bookstore.books}
