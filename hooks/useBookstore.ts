@@ -29,6 +29,7 @@ const setInStorage = (key: string, value: unknown) => {
         console.warn(`Error writing to localStorage key “${key}”:`, error);
     }
 };
+const BOOKS_STORAGE_KEY = 'books';
 const normalizeBook = (book: Book): Book => ({
     ...book,
     id: String(book.id),
@@ -51,7 +52,10 @@ const normalizeOrder = <T extends { items?: Array<{ id: string | number }> }>(or
     items: (order.items ?? []).map((item) => normalizeCartItem(item)),
 });
 export const useBookstore = () => {
-    const [books, setBooks] = useState<Book[]>(initialBooks);
+    const [books, setBooks] = useState<Book[]>(() => {
+        const storedBooks = getFromStorage<Book[]>(BOOKS_STORAGE_KEY, initialBooks);
+        return storedBooks.map((book) => normalizeBook(book as Book));
+    });
     const [collections, setCollections] = useState(() =>
         getFromStorage('collections', INITIAL_COLLECTIONS).map((collection) => normalizeCollection(collection)),
     );
@@ -65,6 +69,7 @@ export const useBookstore = () => {
     const [isOwnerLoggedIn, setIsOwnerLoggedIn] = useState(() => getFromStorage('isOwnerLoggedIn', false));
     const hasSeededRef = useRef(false);
     // Persist state to localStorage on change
+    useEffect(() => { setInStorage(BOOKS_STORAGE_KEY, books); }, [books]);
     useEffect(() => { setInStorage('collections', collections); }, [collections]);
     useEffect(() => { setInStorage('cart', cart); }, [cart]);
     useEffect(() => { setInStorage('orders', orders); }, [orders]);
@@ -76,10 +81,13 @@ export const useBookstore = () => {
             (bookList) => {
                 if (bookList.length > 0) {
                     setBooks(bookList.map((book) => normalizeBook(book)));
-                } else if (!hasSeededRef.current) {
-                    setBooks(initialBooks);
+                    return;
+                }
+
+                if (!hasSeededRef.current) {
+                    setBooks((currentBooks) => (currentBooks.length > 0 ? currentBooks : initialBooks));
                 } else {
-                    setBooks([]);
+                    setBooks((currentBooks) => (currentBooks.length > 0 ? currentBooks : []));
                 }
             },
             (error) => {
@@ -92,6 +100,8 @@ export const useBookstore = () => {
                 const existingBooks = await fetchBooksFromFirestore();
                 if (existingBooks.length === 0) {
                     await Promise.all(initialBooks.map((book) => seedBookInFirestore(book)));
+                             } else {
+                    setBooks(existingBooks.map((book) => normalizeBook(book)));       
                 }
                 hasSeededRef.current = true;
             } catch (error) {
@@ -174,24 +184,60 @@ export const useBookstore = () => {
 
     // Admin - Book management
     const addBook = async (book: BookInput) => {
-        await addBookToFirestore({
+        const normalizedInput = {
             ...book,
             price: Number(book.price),
             stock: Number(book.stock),
-        });
+        };
+
+        try {
+            const newBookId = await addBookToFirestore(normalizedInput);
+            const normalizedBook = normalizeBook({ ...normalizedInput, id: newBookId } as Book);
+            setBooks((prevBooks) => {
+                const nextBooks = [...prevBooks.filter((item) => item.id !== normalizedBook.id), normalizedBook];
+                return nextBooks.sort((a, b) => a.title.localeCompare(b.title));
+            });
+        } catch (error) {
+            console.error('Failed to add book to Firestore, falling back to local storage:', error);
+            const fallbackId = `local_${Date.now()}`;
+            const normalizedBook = normalizeBook({ ...normalizedInput, id: fallbackId } as Book);
+            setBooks((prevBooks) => {
+                const nextBooks = [...prevBooks, normalizedBook];
+                return nextBooks.sort((a, b) => a.title.localeCompare(b.title));
+            });
+        }
     };
     
     const updateBook = async (updatedBook: Book) => {
-        await updateBookInFirestore({
+        const normalizedBook = normalizeBook({
             ...updatedBook,
-            id: String(updatedBook.id),
             price: Number(updatedBook.price),
             stock: Number(updatedBook.stock),
         });
+                setBooks((prevBooks) => {
+            const nextBooks = prevBooks.map((book) => (book.id === normalizedBook.id ? normalizedBook : book));
+            return nextBooks.sort((a, b) => a.title.localeCompare(b.title));
+        });
+
+        try {
+            await updateBookInFirestore({
+                ...normalizedBook,
+            });
+        } catch (error) {
+            console.error('Failed to update book in Firestore, changes kept locally:', error);
+        }
     };
 
     const deleteBook = async (bookId: string | number) => {
-        await deleteBookFromFirestore(bookId);
+        const id = String(bookId);
+
+        setBooks((prevBooks) => prevBooks.filter((book) => book.id !== id));
+
+        try {
+            await deleteBookFromFirestore(bookId);
+        } catch (error) {
+            console.error('Failed to delete book from Firestore, keeping local list updated:', error);
+        }
     };
 
     // Admin - Collection management
