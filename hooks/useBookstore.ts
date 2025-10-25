@@ -8,6 +8,7 @@ import {
     fetchBooks as fetchBooksFromFirestore,
     subscribeToBooks,
     seedBook as seedBookInFirestore,
+    isFirestoreAvailable,
 } from '../services/firebase';
 
 // Helper to get data from localStorage

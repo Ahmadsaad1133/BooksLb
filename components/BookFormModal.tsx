@@ -17,6 +17,7 @@ const BookFormModal = ({ book, onClose, onSave }) => {
   const [formData, setFormData] = useState(book || emptyBook);
   const [coverPreview, setCoverPreview] = useState(book?.coverImage || null);
   const [isSaving, setIsSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (book) {
@@ -44,12 +45,14 @@ const BookFormModal = ({ book, onClose, onSave }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSaving(true);
+    setErrorMessage(null);
     try {
-      setIsSaving(true);
       await onSave(formData);
       onClose();
     } catch (error) {
       console.error('Failed to save book', error);
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to save book. Please try again.');
     } finally {
       setIsSaving(false);
     }
@@ -103,7 +106,11 @@ const BookFormModal = ({ book, onClose, onSave }) => {
                 <input type="file" onChange={handleImageChange} accept="image/*" className="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"/>
                 {coverPreview && <img src={coverPreview} alt="Cover preview" className="mt-4 h-32 w-auto object-contain rounded"/>}
             </div>
-
+            {errorMessage && (
+                <p className="text-sm text-red-600 mb-4" role="alert">
+                    {errorMessage}
+                </p>
+            )}
             <div className="mt-8 text-right">
                 <button type="button" onClick={onClose} className="px-6 py-2 mr-2 text-stone-700 rounded-md hover:bg-stone-100">Cancel</button>
                 <button
