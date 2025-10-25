@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { INITIAL_BOOKS, INITIAL_COLLECTIONS, INITIAL_PAGE_CONTENT, OWNER_PASSWORD } from '../constants';
+import { INITIAL_BOOKS, INITIAL_PAGE_CONTENT, OWNER_PASSWORD } from '../constants';
 import type { Book, BookInput, PageContent } from '../types';
 import {
     addBook as addBookToFirestore,
@@ -44,7 +44,16 @@ const normalizeCollection = <T extends { bookIds?: Array<string | number> }>(col
     ...collection,
     bookIds: (collection.bookIds ?? []).map((id) => String(id)),
 });
+const normalizePageContent = (content: Partial<PageContent> = {}): PageContent => ({
+    ...INITIAL_PAGE_CONTENT,
+    ...content,
+});
 
+const PLACEHOLDER_COLLECTION_NAMES = new Set([
+    'Bestsellers',
+    "Chef's Favorites",
+    'Party-Ready Boxes',
+]);
 const normalizeCartItem = <T extends { id: string | number }>(item: T) => ({
     ...item,
     id: String(item.id),
@@ -60,7 +69,9 @@ export const useBookstore = () => {
         return storedBooks.map((book) => normalizeBook(book as Book));
     });
     const [collections, setCollections] = useState(() =>
-        getFromStorage('collections', INITIAL_COLLECTIONS).map((collection) => normalizeCollection(collection)),
+        getFromStorage('collections', [])
+            .filter((collection) => !PLACEHOLDER_COLLECTION_NAMES.has(collection?.name ?? ''))
+            .map((collection) => normalizeCollection(collection)),
     );
     const [cart, setCart] = useState(() =>
         getFromStorage('cart', []).map((item: { id: string | number }) => normalizeCartItem(item)),
@@ -68,7 +79,9 @@ export const useBookstore = () => {
     const [orders, setOrders] = useState(() =>
         getFromStorage('orders', []).map((order: { items?: Array<{ id: string | number }> }) => normalizeOrder(order)),
     );
-    const [pageContent, setPageContent] = useState<PageContent>(() => getFromStorage('pageContent', INITIAL_PAGE_CONTENT));
+    const [pageContent, setPageContent] = useState<PageContent>(() =>
+        normalizePageContent(getFromStorage('pageContent', INITIAL_PAGE_CONTENT)),
+    );
     const [isOwnerLoggedIn, setIsOwnerLoggedIn] = useState(false);
     const hasSeededRef = useRef(false);
     const previousPageContentRef = useRef<PageContent | null>(null);
@@ -85,13 +98,15 @@ export const useBookstore = () => {
             unsubscribe = subscribeToPageContent(
                 (content) => {
                     setPageContent((current) => {
+                        const normalizedContent = normalizePageContent(content);
                         const hasChanges =
-                            current.heroTitle !== content.heroTitle ||
-                            current.heroSubtitle !== content.heroSubtitle ||
-                            current.heroImage !== content.heroImage ||
-                            current.aboutContent !== content.aboutContent;
+                            current.heroTitle !== normalizedContent.heroTitle ||
+                            current.heroSubtitle !== normalizedContent.heroSubtitle ||
+                            current.heroImage !== normalizedContent.heroImage ||
+                            current.aboutContent !== normalizedContent.aboutContent ||
+                            current.logoImage !== normalizedContent.logoImage;
 
-                        return hasChanges ? content : current;
+                        return hasChanges ? normalizedContent : current;
                     });
                 },
                 (error) => {
@@ -107,7 +122,7 @@ export const useBookstore = () => {
                 const existingContent = await fetchPageContentFromFirestore();
 
                 if (existingContent) {
-                    setPageContent(existingContent);
+                    setPageContent(normalizePageContent(existingContent));
                 } else {
                     await savePageContentToFirestore(INITIAL_PAGE_CONTENT);
                     setPageContent(INITIAL_PAGE_CONTENT);
@@ -166,7 +181,7 @@ export const useBookstore = () => {
             unsubscribe = subscribeToPageContent(
                 (content) => {
                     if (content) {
-                        setPageContent(content);
+                        setPageContent(normalizePageContent(content));
                     }
                 },
                 (error) => {
@@ -181,7 +196,7 @@ export const useBookstore = () => {
             try {
                 const firestoreContent = await fetchPageContentFromFirestore();
                 if (firestoreContent) {
-                    setPageContent(firestoreContent);
+                    setPageContent(normalizePageContent(firestoreContent));
                 }
             } catch (error) {
                 console.error('Failed to fetch page content from Firestore:', error);
@@ -343,13 +358,13 @@ export const useBookstore = () => {
 
     // Admin - Page Content management
     const updatePageContent = async (newContent: PageContent) => {
-        const normalizedContent: PageContent = {
+        const normalizedContent: PageContent = normalizePageContent({
             heroTitle: newContent.heroTitle ?? '',
             heroSubtitle: newContent.heroSubtitle ?? '',
             heroImage: newContent.heroImage ?? '',
             aboutContent: newContent.aboutContent ?? '',
-        };
-
+            logoImage: newContent.logoImage ?? '',
+        });
         setPageContent((prevContent) => {
             previousPageContentRef.current = prevContent;
             return normalizedContent;

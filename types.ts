@@ -17,4 +17,5 @@ export interface PageContent {
     heroSubtitle: string;
     heroImage: string;
     aboutContent: string;
+    logoImage: string;
 }

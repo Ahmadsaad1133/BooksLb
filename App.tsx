@@ -22,12 +22,12 @@ const App = () => {
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [lastOrder, setLastOrder] = useState(null);
 
-    const featuredCollection = bookstore.collections.find(c => c.name === "Bestsellers" || c.name === "Chef's Favorites");
+    const featuredCollection = bookstore.collections.find((collection) => (collection.bookIds?.length ?? 0) > 0);
     const featuredIds = new Set((featuredCollection?.bookIds ?? []).map(id => String(id)));
     const featuredBooks = featuredIds.size
         ? bookstore.books.filter(b => featuredIds.has(String(b.id)))
         : bookstore.books.slice(0, 4);
-
+    const featuredTitle = featuredCollection?.name ?? 'Featured Desserts';
     const handleSelectBook = (book) => {
         setSelectedBook(book);
     };
@@ -75,13 +75,13 @@ const App = () => {
                             onShopNow={() => setCurrentPage('books')}
                         />
                         <FeaturedBooks
-                            title="Chef's Favorites"
+                            title={featuredTitle}
                             books={featuredBooks}
                             onSelectBook={handleSelectBook}
                             onAddToCart={handleAddToCart}
                         />
                         <CollectionsShowcase
-                            collections={bookstore.collections}
+                            collections={bookstore.collections.filter((collection) => (collection.bookIds?.length ?? 0) > 0)}
                             books={bookstore.books}
                             onExploreCollection={() => setCurrentPage('books')}
                         />
@@ -151,6 +151,7 @@ const App = () => {
                 onAdminClick={() => setCurrentPage('admin')}
                 cartCount={bookstore.cartCount}
                 isOwnerLoggedIn={bookstore.isOwnerLoggedIn}
+                logoImage={bookstore.pageContent.logoImage}
             />
             
             <main>

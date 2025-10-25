@@ -3,7 +3,7 @@ import { CupcakeIcon, ShoppingCartIcon, UserIcon, ClipboardListIcon } from './Ic
 const Header = ({ 
     onHomeClick, onBooksClick, onAboutClick, onContactClick,
     onCartClick, onLoginClick, onLogoutClick, onAdminClick,
-    cartCount, isOwnerLoggedIn 
+    cartCount, isOwnerLoggedIn, logoImage
 }) => {
   return (
     <header className="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-50 border-b border-rose-100">
@@ -12,7 +12,11 @@ const Header = ({
           className="flex items-center space-x-2 cursor-pointer"
           onClick={onHomeClick}
         >
-          <CupcakeIcon className="h-9 w-9 text-rose-500" />
+          {logoImage ? (
+            <img src={logoImage} alt="Deli Postres logo" className="h-9 w-9 object-contain" />
+          ) : (
+            <CupcakeIcon className="h-9 w-9 text-rose-500" />
+          )}
           <h1 className="text-2xl font-bold text-rose-700 font-serif tracking-wide">Deli Postres</h1>
         </div>
         <div className="flex items-center space-x-6">

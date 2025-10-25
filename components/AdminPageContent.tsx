@@ -13,21 +13,19 @@ const AdminPageContent: React.FC<AdminPageContentProps> = ({ bookstore }) => {
   const { pageContent, updatePageContent } = bookstore;
   const [content, setContent] = useState<PageContent>(pageContent);
   const [heroImagePreview, setHeroImagePreview] = useState<string>(pageContent.heroImage);
+  const [logoImagePreview, setLogoImagePreview] = useState<string>(pageContent.logoImage);
   const [isSaving, setIsSaving] = useState(false);
   useEffect(() => {
     setContent(pageContent);
     setHeroImagePreview(pageContent.heroImage);
-  }, [pageContent]);
-  useEffect(() => {
-    setContent(pageContent);
-    setHeroImagePreview(pageContent.heroImage);
+    setLogoImagePreview(pageContent.logoImage);
   }, [pageContent]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setContent({ ...content, [e.target.name]: e.target.value });
   };
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHeroImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const base64 = (await toBase64(file)) as string;
@@ -35,7 +33,14 @@ const AdminPageContent: React.FC<AdminPageContentProps> = ({ bookstore }) => {
       setHeroImagePreview(base64);
     }
   };
-
+  const handleLogoImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const base64 = (await toBase64(file)) as string;
+      setContent(prev => ({ ...prev, logoImage: base64 }));
+      setLogoImagePreview(base64);
+    }
+  };
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -79,7 +84,25 @@ const AdminPageContent: React.FC<AdminPageContentProps> = ({ bookstore }) => {
           <label className="block text-rose-700 font-medium mb-1">Hero Image</label>
            <input
             type="file"
-            onChange={handleImageChange}
+            onChange={handleHeroImageChange}
+            accept="image/*"
+            className="w-full text-sm text-rose-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-rose-600 hover:file:bg-rose-100"
+          />
+        </div>
+        <div>
+          <label className="block text-rose-700 font-medium mb-1">Header Logo</label>
+          {logoImagePreview && (
+            <div className="mb-3">
+              <img
+                src={logoImagePreview}
+                alt="Current logo"
+                className="h-12 w-12 object-contain rounded"
+              />
+            </div>
+          )}
+           <input
+            type="file"
+            onChange={handleLogoImageChange}
             accept="image/*"
             className="w-full text-sm text-rose-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-rose-600 hover:file:bg-rose-100"
           />

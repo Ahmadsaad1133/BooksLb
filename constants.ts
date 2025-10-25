@@ -69,22 +69,11 @@ export const INITIAL_BOOKS = [
     }
 ];
 
-export const INITIAL_COLLECTIONS = [
-    {
-        id: 1,
-        name: "Chef's Favorites",
-        bookIds: [1, 2, 4, 5]
-    },
-    {
-        id: 2,
-        name: "Party-Ready Boxes",
-        bookIds: [3, 6]
-    }
-];
 
 export const INITIAL_PAGE_CONTENT = {
     heroTitle: "Handcrafted Desserts, Delivered with Love",
     heroSubtitle: "Welcome to Deli Postres, your online pastry boutique for Latin-inspired sweets, celebration cakes, and petite indulgences made fresh to order.",
     heroImage: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=1887&q=80",
-    aboutContent: "Founded in 2023, Deli Postres celebrates the art of modern Latin pastry. From creamy tres leches to jewel-like tartlets, every dessert is crafted in small batches using seasonal ingredients and family recipes. Whether you are planning a party or treating yourself, we are here to sweeten every moment with a touch of warmth and nostalgia."
+    aboutContent: "Founded in 2023, Deli Postres celebrates the art of modern Latin pastry. From creamy tres leches to jewel-like tartlets, every dessert is crafted in small batches using seasonal ingredients and family recipes. Whether you are planning a party or treating yourself, we are here to sweeten every moment with a touch of warmth and nostalgia.",
+    logoImage: ""
 };

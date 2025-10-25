@@ -56,6 +56,7 @@ const mapDataToPageContent = (data: DocumentData): PageContent => ({
     heroSubtitle: typeof data.heroSubtitle === 'string' ? data.heroSubtitle : '',
     heroImage: typeof data.heroImage === 'string' ? data.heroImage : '',
     aboutContent: typeof data.aboutContent === 'string' ? data.aboutContent : '',
+    logoImage: typeof data.logoImage === 'string' ? data.logoImage : '',
 });
 export const fetchBooks = async (): Promise<Book[]> => {
     const booksQuery = query(booksCollection, orderBy('title', 'asc'));
