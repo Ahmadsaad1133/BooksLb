@@ -146,43 +146,6 @@ export const updateBook = async (book: Book): Promise<void> => {
         updatedAt: serverTimestamp(),
     });
 };
-const mapDataToPageContent = (data: DocumentData): PageContent => ({
-    heroTitle: data.heroTitle ?? '',
-    heroSubtitle: data.heroSubtitle ?? '',
-    heroImage: data.heroImage ?? '',
-    aboutContent: data.aboutContent ?? '',
-});
-
-export const fetchPageContent = async (): Promise<PageContent | null> => {
-    const snapshot = await getDoc(pageContentDocRef);
-    if (!snapshot.exists()) {
-        return null;
-    }
-
-    return mapDataToPageContent(snapshot.data() ?? {});
-};
-
-export const subscribeToPageContent = (
-    onContent: (content: PageContent | null) => void,
-    onError?: (error: Error) => void,
-): Unsubscribe => {
-    return onSnapshot(
-        pageContentDocRef,
-        (snapshot) => {
-            if (!snapshot.exists()) {
-                onContent(null);
-                return;
-            }
-
-            onContent(mapDataToPageContent(snapshot.data() ?? {}));
-        },
-        (error) => {
-            console.error('Error with Firestore page content subscription:', error);
-            onError?.(error as Error);
-        },
-    );
-};
-
 export const updatePageContent = async (content: PageContent): Promise<void> => {
     await setDoc(
         pageContentDocRef,
