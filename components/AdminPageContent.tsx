@@ -1,32 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toBase64 } from '../utils/imageUtils';
+import type { PageContent } from '../types';
 
-const AdminPageContent = ({ bookstore }) => {
+interface AdminPageContentProps {
+  bookstore: {
+    pageContent: PageContent;
+    updatePageContent: (content: PageContent) => Promise<void>;
+  };
+}
+
+const AdminPageContent: React.FC<AdminPageContentProps> = ({ bookstore }) => {
   const { pageContent, updatePageContent } = bookstore;
-  const [content, setContent] = useState(pageContent);
-  const [heroImagePreview, setHeroImagePreview] = useState(pageContent.heroImage);
+  const [content, setContent] = useState<PageContent>(pageContent);
+  const [heroImagePreview, setHeroImagePreview] = useState<string>(pageContent.heroImage);
   const [isSaving, setIsSaving] = useState(false);
+  useEffect(() => {
+    setContent(pageContent);
+    setHeroImagePreview(pageContent.heroImage);
+  }, [pageContent]);
+  useEffect(() => {
+    setContent(pageContent);
+    setHeroImagePreview(pageContent.heroImage);
+  }, [pageContent]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setContent({ ...content, [e.target.name]: e.target.value });
   };
 
-  const handleImageChange = async (e) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const base64 = await toBase64(file);
+      const base64 = (await toBase64(file)) as string;
       setContent(prev => ({ ...prev, heroImage: base64 }));
       setHeroImagePreview(base64);
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setIsSaving(true);
-    updatePageContent(content);
-    setTimeout(() => {
-        setIsSaving(false)
-        alert('Content updated successfully!')
-    }, 1000); // Simulate save
+    try {
+      await updatePageContent(content);
+      alert('Content updated successfully!');
+    } catch (error) {
+      console.error('Failed to update page content:', error);
+      alert('Failed to update content. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -57,8 +77,12 @@ const AdminPageContent = ({ bookstore }) => {
         </div>
         <div>
           <label className="block text-stone-700 font-medium mb-1">Hero Image</label>
-          <input type="file" onChange={handleImageChange} accept="image/*" className="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"/>
-          {heroImagePreview && <img src={heroImagePreview} alt="Hero preview" className="mt-4 h-48 w-auto object-contain rounded-md bg-stone-100"/>}
+           <input
+            type="file"
+            onChange={handleImageChange}
+            accept="image/*"
+            className="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"
+          />
         </div>
         <div>
           <label htmlFor="aboutContent" className="block text-stone-700 font-medium mb-1">About Us Content</label>

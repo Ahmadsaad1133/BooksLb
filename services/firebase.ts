@@ -8,6 +8,7 @@ import {
     updateDoc,
     deleteDoc,
     getDocs,
+    getDoc,
     onSnapshot,
     query,
     orderBy,
@@ -17,7 +18,7 @@ import {
     type DocumentData,
 } from 'firebase/firestore';
 
-import type { Book, BookInput } from '../types';
+import type { Book, BookInput, PageContent } from '../types';
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
@@ -33,7 +34,7 @@ const firebaseApp: FirebaseApp = getApps().length ? getApp() : initializeApp(fir
 export const db: Firestore = getFirestore(firebaseApp);
 
 const booksCollection = collection(db, 'books');
-
+const pageContentDocRef = doc(db, 'pageContent', 'home');
 const mapSnapshotToBook = (snapshot: QueryDocumentSnapshot<DocumentData>): Book => {
     const data = snapshot.data();
 
@@ -49,7 +50,12 @@ const mapSnapshotToBook = (snapshot: QueryDocumentSnapshot<DocumentData>): Book 
         stock: typeof data.stock === 'number' ? data.stock : Number(data.stock ?? 0),
     };
 };
-
+const mapDataToPageContent = (data: DocumentData): PageContent => ({
+    heroTitle: typeof data.heroTitle === 'string' ? data.heroTitle : '',
+    heroSubtitle: typeof data.heroSubtitle === 'string' ? data.heroSubtitle : '',
+    heroImage: typeof data.heroImage === 'string' ? data.heroImage : '',
+    aboutContent: typeof data.aboutContent === 'string' ? data.aboutContent : '',
+});
 export const fetchBooks = async (): Promise<Book[]> => {
     const booksQuery = query(booksCollection, orderBy('title', 'asc'));
     const snapshot = await getDocs(booksQuery);
@@ -72,6 +78,47 @@ export const subscribeToBooks = (
             console.error('Error with Firestore book subscription:', error);
             onError?.(error);
         },
+    );
+};
+export const fetchPageContent = async (): Promise<PageContent | null> => {
+    const snapshot = await getDoc(pageContentDocRef);
+
+    if (!snapshot.exists()) {
+        return null;
+    }
+
+    return mapDataToPageContent(snapshot.data() ?? {});
+};
+
+export const subscribeToPageContent = (
+    onContent: (content: PageContent) => void,
+    onError?: (error: Error) => void,
+): Unsubscribe => {
+    return onSnapshot(
+        pageContentDocRef,
+        (snapshot) => {
+            if (!snapshot.exists()) {
+                return;
+            }
+
+            const content = mapDataToPageContent(snapshot.data() ?? {});
+            onContent(content);
+        },
+        (error) => {
+            console.error('Error with Firestore page content subscription:', error);
+            onError?.(error);
+        },
+    );
+};
+
+export const savePageContent = async (content: PageContent): Promise<void> => {
+    await setDoc(
+        pageContentDocRef,
+        {
+            ...content,
+            updatedAt: serverTimestamp(),
+        },
+        { merge: true },
     );
 };
 
@@ -99,7 +146,53 @@ export const updateBook = async (book: Book): Promise<void> => {
         updatedAt: serverTimestamp(),
     });
 };
+const mapDataToPageContent = (data: DocumentData): PageContent => ({
+    heroTitle: data.heroTitle ?? '',
+    heroSubtitle: data.heroSubtitle ?? '',
+    heroImage: data.heroImage ?? '',
+    aboutContent: data.aboutContent ?? '',
+});
 
+export const fetchPageContent = async (): Promise<PageContent | null> => {
+    const snapshot = await getDoc(pageContentDocRef);
+    if (!snapshot.exists()) {
+        return null;
+    }
+
+    return mapDataToPageContent(snapshot.data() ?? {});
+};
+
+export const subscribeToPageContent = (
+    onContent: (content: PageContent | null) => void,
+    onError?: (error: Error) => void,
+): Unsubscribe => {
+    return onSnapshot(
+        pageContentDocRef,
+        (snapshot) => {
+            if (!snapshot.exists()) {
+                onContent(null);
+                return;
+            }
+
+            onContent(mapDataToPageContent(snapshot.data() ?? {}));
+        },
+        (error) => {
+            console.error('Error with Firestore page content subscription:', error);
+            onError?.(error as Error);
+        },
+    );
+};
+
+export const updatePageContent = async (content: PageContent): Promise<void> => {
+    await setDoc(
+        pageContentDocRef,
+        {
+            ...content,
+            updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+    );
+};
 export const deleteBook = async (bookId: string | number): Promise<void> => {
     const docRef = doc(booksCollection, String(bookId));
     await deleteDoc(docRef);

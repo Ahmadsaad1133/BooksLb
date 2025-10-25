@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { INITIAL_BOOKS, INITIAL_COLLECTIONS, INITIAL_PAGE_CONTENT, OWNER_PASSWORD } from '../constants';
-import type { Book, BookInput } from '../types';
+import type { Book, BookInput, PageContent } from '../types';
 import {
     addBook as addBookToFirestore,
     updateBook as updateBookInFirestore,
@@ -8,7 +8,9 @@ import {
     fetchBooks as fetchBooksFromFirestore,
     subscribeToBooks,
     seedBook as seedBookInFirestore,
-    isFirestoreAvailable,
+    fetchPageContent as fetchPageContentFromFirestore,
+    subscribeToPageContent,
+    savePageContent as savePageContentToFirestore,
 } from '../services/firebase';
 
 // Helper to get data from localStorage
@@ -66,9 +68,10 @@ export const useBookstore = () => {
     const [orders, setOrders] = useState(() =>
         getFromStorage('orders', []).map((order: { items?: Array<{ id: string | number }> }) => normalizeOrder(order)),
     );
-    const [pageContent, setPageContent] = useState(() => getFromStorage('pageContent', INITIAL_PAGE_CONTENT));
+    const [pageContent, setPageContent] = useState<PageContent>(() => getFromStorage('pageContent', INITIAL_PAGE_CONTENT));
     const [isOwnerLoggedIn, setIsOwnerLoggedIn] = useState(() => getFromStorage('isOwnerLoggedIn', false));
     const hasSeededRef = useRef(false);
+    const previousPageContentRef = useRef<PageContent | null>(null);
     // Persist state to localStorage on change
     useEffect(() => { setInStorage(BOOKS_STORAGE_KEY, books); }, [books]);
     useEffect(() => { setInStorage('collections', collections); }, [collections]);
@@ -76,6 +79,49 @@ export const useBookstore = () => {
     useEffect(() => { setInStorage('orders', orders); }, [orders]);
     useEffect(() => { setInStorage('pageContent', pageContent); }, [pageContent]);
     useEffect(() => { setInStorage('isOwnerLoggedIn', isOwnerLoggedIn); }, [isOwnerLoggedIn]);
+    useEffect(() => {
+        let unsubscribe: ReturnType<typeof subscribeToPageContent> | undefined;
+
+        try {
+            unsubscribe = subscribeToPageContent(
+                (content) => {
+                    setPageContent((current) => {
+                        const hasChanges =
+                            current.heroTitle !== content.heroTitle ||
+                            current.heroSubtitle !== content.heroSubtitle ||
+                            current.heroImage !== content.heroImage ||
+                            current.aboutContent !== content.aboutContent;
+
+                        return hasChanges ? content : current;
+                    });
+                },
+                (error) => {
+                    console.error('Failed to subscribe to Firestore page content:', error);
+                },
+            );
+        } catch (error) {
+            console.error('Error setting up Firestore page content subscription:', error);
+        }
+
+        (async () => {
+            try {
+                const existingContent = await fetchPageContentFromFirestore();
+
+                if (existingContent) {
+                    setPageContent(existingContent);
+                } else {
+                    await savePageContentToFirestore(INITIAL_PAGE_CONTENT);
+                    setPageContent(INITIAL_PAGE_CONTENT);
+                }
+            } catch (error) {
+                console.error('Failed to initialize Firestore page content:', error);
+            }
+        })();
+
+        return () => {
+            unsubscribe?.();
+        };
+    }, []);
     // Sync books with Firestore
     useEffect(() => {
         const unsubscribe = subscribeToBooks(
@@ -112,6 +158,39 @@ export const useBookstore = () => {
 
         return () => {
             unsubscribe();
+        };
+    }, []);
+        useEffect(() => {
+        let unsubscribe: (() => void) | undefined;
+
+        try {
+            unsubscribe = subscribeToPageContent(
+                (content) => {
+                    if (content) {
+                        setPageContent(content);
+                    }
+                },
+                (error) => {
+                    console.error('Failed to subscribe to Firestore page content:', error);
+                },
+            );
+        } catch (error) {
+            console.error('Failed to initialize Firestore page content subscription:', error);
+        }
+
+        (async () => {
+            try {
+                const firestoreContent = await fetchPageContentFromFirestore();
+                if (firestoreContent) {
+                    setPageContent(firestoreContent);
+                }
+            } catch (error) {
+                console.error('Failed to fetch page content from Firestore:', error);
+            }
+        })();
+
+        return () => {
+            unsubscribe?.();
         };
     }, []);
     // Cart management
@@ -264,8 +343,28 @@ export const useBookstore = () => {
     };
 
     // Admin - Page Content management
-    const updatePageContent = (newContent) => {
-        setPageContent(newContent);
+    const updatePageContent = async (newContent: PageContent) => {
+        const normalizedContent: PageContent = {
+            heroTitle: newContent.heroTitle ?? '',
+            heroSubtitle: newContent.heroSubtitle ?? '',
+            heroImage: newContent.heroImage ?? '',
+            aboutContent: newContent.aboutContent ?? '',
+        };
+
+        setPageContent((prevContent) => {
+            previousPageContentRef.current = prevContent;
+            return normalizedContent;
+        });
+
+        try {
+            await savePageContentToFirestore(normalizedContent);
+        } catch (error) {
+            console.error('Failed to save page content to Firestore, reverting to previous content:', error);
+            setPageContent(previousPageContentRef.current ?? INITIAL_PAGE_CONTENT);
+            throw error;
+        } finally {
+            previousPageContentRef.current = null;
+        }
     };
 
     return {
