@@ -11,7 +11,6 @@ import CheckoutForm from './components/CheckoutForm';
 import OrderConfirmation from './components/OrderConfirmation';
 import AdminDashboard from './components/AdminDashboard';
 import LoginModal from './components/LoginModal';
-import BookRecommender from './components/BookRecommender';
 import CollectionsShowcase from './components/CollectionsShowcase';
 import { useBookstore } from './hooks/useBookstore';
 
@@ -84,11 +83,6 @@ const App = () => {
                             collections={bookstore.collections.filter((collection) => (collection.bookIds?.length ?? 0) > 0)}
                             books={bookstore.books}
                             onExploreCollection={() => setCurrentPage('books')}
-                        />
-                        <BookRecommender 
-                            allBooks={bookstore.books}
-                            onSelectBook={handleSelectBook}
-                            onAddToCart={handleAddToCart}
                         />
                         <AboutSection content={bookstore.pageContent.aboutContent} />
                         <ContactForm />
