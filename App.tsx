@@ -20,6 +20,15 @@ const App = () => {
     const [selectedBook, setSelectedBook] = useState(null);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [lastOrder, setLastOrder] = useState(null);
+    if (!bookstore.isHydrated) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-rose-50 text-rose-900">
+                <div className="text-center">
+                    <p className="text-xl font-semibold">Loading bakery delights…</p>
+                </div>
+            </div>
+        );
+    }
 
     const featuredCollection = bookstore.collections.find((collection) => (collection.bookIds?.length ?? 0) > 0);
     const featuredIds = new Set((featuredCollection?.bookIds ?? []).map(id => String(id)));

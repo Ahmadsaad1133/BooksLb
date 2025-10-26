@@ -83,8 +83,11 @@ export const useBookstore = () => {
         normalizePageContent(getFromStorage('pageContent', INITIAL_PAGE_CONTENT)),
     );
     const [isOwnerLoggedIn, setIsOwnerLoggedIn] = useState(false);
+    const [isBooksHydrated, setIsBooksHydrated] = useState(false);
+    const [isContentHydrated, setIsContentHydrated] = useState(false);
     const hasSeededRef = useRef(false);
     const previousPageContentRef = useRef<PageContent | null>(null);
+    const isHydrated = isBooksHydrated && isContentHydrated;
     // Persist state to localStorage on change
     useEffect(() => { setInStorage(BOOKS_STORAGE_KEY, books); }, [books]);
     useEffect(() => { setInStorage('collections', collections); }, [collections]);
@@ -125,6 +128,10 @@ export const useBookstore = () => {
                 }
             } catch (error) {
                 console.error('Failed to initialize Firestore page content:', error);
+            } finally {
+                if (isMounted) {
+                    setIsContentHydrated(true);
+                }
             }
         };
 
@@ -134,6 +141,7 @@ export const useBookstore = () => {
                     (content) => {
                         if (isMounted) {
                             applyContent(content);
+                            setIsContentHydrated(true);
                         }
                     },
                     (error) => {
@@ -155,10 +163,15 @@ export const useBookstore = () => {
     }, []);
     // Sync books with Firestore
     useEffect(() => {
+        let isMounted = true;
         const unsubscribe = subscribeToBooks(
             (bookList) => {
+                if (!isMounted) {
+                    return;
+                }
                 if (bookList.length > 0) {
                     setBooks(bookList.map((book) => normalizeBook(book)));
+                    setIsBooksHydrated(true);
                     return;
                 }
 
@@ -167,6 +180,7 @@ export const useBookstore = () => {
                 } else {
                     setBooks((currentBooks) => (currentBooks.length > 0 ? currentBooks : []));
                 }
+                setIsBooksHydrated(true);
             },
             (error) => {
                 console.error('Failed to subscribe to Firestore desserts:', error);
@@ -176,19 +190,30 @@ export const useBookstore = () => {
         (async () => {
             try {
                 const existingBooks = await fetchBooksFromFirestore();
+                if (!isMounted) {
+                    return;
+                }
                 if (existingBooks.length === 0) {
                     await Promise.all(initialBooks.map((book) => seedBookInFirestore(book)));
+                    if (isMounted) {
+                        setBooks(initialBooks);
+                    }
                     setBooks(initialBooks);
                 } else {
-                    setBooks(existingBooks.map((book) => normalizeBook(book))); 
+                    setBooks(existingBooks.map((book) => normalizeBook(book)));
                 }
                 hasSeededRef.current = true;
             } catch (error) {
                 console.error('Failed to initialize Firestore data:', error);
+            } finally {
+                if (isMounted) {
+                    setIsBooksHydrated(true);
+                }
             }
         })();
 
         return () => {
+            isMounted = false;
             unsubscribe();
         };
     }, []);
@@ -394,5 +419,6 @@ export const useBookstore = () => {
         deleteCollection,
         updatePageContent,
         updateOrderStatus,
+        isHydrated,
     };
 };
