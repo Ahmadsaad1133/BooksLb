@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { XIcon } from './Icons';
 
-const CollectionFormModal = ({ collection, allBooks, onClose, onSave }) => {
-  const [name, setName] = useState('');
-  const [selectedBookIds, setSelectedBookIds] = useState([]);
+type CollectionFormData = {
+  name: string;
+  bookIds: string[];
+};
 
+type ExistingCollection = CollectionFormData & {
+  id: string | number;
+};
+
+type CollectionFormModalProps = {
+  collection: ExistingCollection | null;
+  allBooks: Array<{ id: string | number; title: string }>;
+  onClose: () => void;
+  onSave: (collection: CollectionFormData | ExistingCollection) => void;
+};
+
+const CollectionFormModal: React.FC<CollectionFormModalProps> = ({ collection, allBooks, onClose, onSave }) => {
+  const [name, setName] = useState<string>('');
+  const [selectedBookIds, setSelectedBookIds] = useState<string[]>([]);
   useEffect(() => {
     if (collection) {
       setName(collection.name);
@@ -15,16 +30,21 @@ const CollectionFormModal = ({ collection, allBooks, onClose, onSave }) => {
     }
   }, [collection]);
 
-  const handleBookToggle = (bookId) => {
+  const handleBookToggle = (bookId: string | number) => {
     const id = String(bookId);
     setSelectedBookIds(prev =>
       prev.includes(id) ? prev.filter(existingId => existingId !== id) : [...prev, id]
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const collectionData = { ...collection, name, bookIds: selectedBookIds };
+    const base: Partial<ExistingCollection> | null =
+      collection && typeof collection === 'object' ? { ...collection } : null;
+
+    const collectionData: CollectionFormData | ExistingCollection = base && 'id' in base && base.id !== undefined
+      ? { ...base, id: base.id, name, bookIds: selectedBookIds }
+      : { name, bookIds: selectedBookIds };
     onSave(collectionData);
     onClose();
   };
