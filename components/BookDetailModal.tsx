@@ -32,10 +32,10 @@ const BookDetailModal = ({ book, onClose, onAddToCart }) => {
           <p className="text-lg text-rose-600 mb-4">{book.author}</p>
           <div className="flex items-center space-x-4 mb-6">
             <span className="text-2xl font-bold text-rose-600">${book.price.toFixed(2)}</span>
-            <span className="bg-rose-100 text-rose-700 text-sm font-medium px-3 py-1 rounded-full">Category: {book.genre}</span>
+            <span className="bg-rose-100 text-rose-700 text-sm font-medium px-3 py-1 rounded-full">Genre: {book.genre}</span>
           </div>
           <p className="text-stone-700 leading-relaxed mb-6 flex-grow">{book.description}</p>
-          <p className="text-sm text-rose-700/80 mb-6">Allergens: {book.publisher}</p>
+          <p className="text-sm text-rose-700/80 mb-6">Source: {book.publisher}</p>
            <div className="flex items-center gap-4">
               <input
                 type="number"
@@ -48,7 +48,7 @@ const BookDetailModal = ({ book, onClose, onAddToCart }) => {
                 onClick={handleAddToCart}
                 className="flex-grow px-8 py-3 bg-rose-500 text-white font-bold rounded-full hover:bg-rose-400 transition-transform transform hover:scale-105 duration-300 shadow-lg"
               >
-                Add to Order
+                Add to Cart
               </button>
            </div>
         </div>

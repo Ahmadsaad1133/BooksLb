@@ -20,7 +20,7 @@ const Hero: React.FC<HeroProps> = ({ title, subtitle, image, onShopNow }) => {
           onClick={onShopNow}
           className="px-8 py-3 bg-rose-500 font-bold rounded-full hover:bg-rose-400 transition-transform transform hover:scale-105 duration-300 shadow-lg"
         >
-          Explore the Menu
+          Browse the Catalog
         </button>
       </div>
     </section>

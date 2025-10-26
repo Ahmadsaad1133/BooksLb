@@ -51,8 +51,8 @@ const BookFormModal = ({ book, onClose, onSave }) => {
       await onSave(formData);
       onClose();
     } catch (error) {
-      console.error('Failed to save dessert', error);
-      setErrorMessage(error instanceof Error ? error.message : 'Failed to save dessert. Please try again.');
+      console.error('Failed to save book', error);
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to save book. Please try again.');
     } finally {
       setIsSaving(false);
     }
@@ -63,7 +63,7 @@ const BookFormModal = ({ book, onClose, onSave }) => {
       <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col border border-rose-100" onClick={e => e.stopPropagation()}>
         <form onSubmit={handleSubmit} className="p-8 flex-grow overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold font-serif text-rose-700">{book && 'id' in book ? 'Edit Dessert' : 'Add New Dessert'}</h2>
+              <h2 className="text-2xl font-bold font-serif text-rose-700">{book && 'id' in book ? 'Edit Book' : 'Add New Book'}</h2>
               <button type="button" onClick={onClose} className="text-rose-400 hover:text-rose-600">
                 <XIcon className="h-6 w-6" />
               </button>
@@ -71,19 +71,19 @@ const BookFormModal = ({ book, onClose, onSave }) => {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="mb-4">
-                    <label htmlFor="title" className="block text-rose-700 font-medium mb-1">Dessert Name</label>
+                    <label htmlFor="title" className="block text-rose-700 font-medium mb-1">Book Title</label>
                     <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required className="w-full px-4 py-2 border border-rose-200 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-400" />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="author" className="block text-rose-700 font-medium mb-1">Flavor Notes</label>
+                    <label htmlFor="author" className="block text-rose-700 font-medium mb-1">Author</label>
                     <input type="text" id="author" name="author" value={formData.author} onChange={handleChange} required className="w-full px-4 py-2 border border-rose-200 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-400" />
                 </div>
                  <div className="mb-4">
-                    <label htmlFor="genre" className="block text-rose-700 font-medium mb-1">Category</label>
+                    <label htmlFor="genre" className="block text-rose-700 font-medium mb-1">Genre</label>
                     <input type="text" id="genre" name="genre" value={formData.genre} onChange={handleChange} required className="w-full px-4 py-2 border border-rose-200 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-400" />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="publisher" className="block text-rose-700 font-medium mb-1">Allergens</label>
+                    <label htmlFor="publisher" className="block text-rose-700 font-medium mb-1">Source / Publisher</label>
                     <input type="text" id="publisher" name="publisher" value={formData.publisher} onChange={handleChange} required className="w-full px-4 py-2 border border-rose-200 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-400" />
                 </div>
                 <div className="mb-4">
@@ -102,9 +102,9 @@ const BookFormModal = ({ book, onClose, onSave }) => {
             </div>
 
             <div className="mb-4">
-                <label className="block text-rose-700 font-medium mb-1">Dessert Image</label>
+                <label className="block text-rose-700 font-medium mb-1">Cover Image</label>
                 <input type="file" onChange={handleImageChange} accept="image/*" className="w-full text-sm text-rose-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-rose-600 hover:file:bg-rose-100"/>
-                {coverPreview && <img src={coverPreview} alt="Dessert preview" className="mt-4 h-32 w-auto object-contain rounded"/>}
+                {coverPreview && <img src={coverPreview} alt="Book cover preview" className="mt-4 h-32 w-auto object-contain rounded"/>}
             </div>
             {errorMessage && (
                 <p className="text-sm text-red-600 mb-4" role="alert">
@@ -118,7 +118,7 @@ const BookFormModal = ({ book, onClose, onSave }) => {
                     disabled={isSaving}
                     className="px-6 py-2 bg-rose-500 text-white font-bold rounded-md hover:bg-rose-400 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                    {isSaving ? 'Saving...' : 'Save Dessert'}
+                    {isSaving ? 'Saving...' : 'Save Book'}
                 </button>
             </div>
         </form>

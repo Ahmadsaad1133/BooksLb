@@ -1,16 +1,11 @@
 import React from 'react';
 
-export const CupcakeIcon = (props) => (
+export const BookIcon = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" strokeWidth={1.5} stroke="currentColor" {...props}>
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
-      d="M8.25 7.5c0-2.071 1.679-3.75 3.75-3.75s3.75 1.679 3.75 3.75c1.656 0 3 1.344 3 3 0 .336-.054.66-.153.964a2.999 2.999 0 011.653 2.686c0 1.656-1.344 3-3 3h-10.5c-1.656 0-3-1.344-3-3 0-1.177.683-2.194 1.67-2.69A3.004 3.004 0 015.25 10.5c0-1.656 1.344-3 3-3z"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M7.5 16.5l.75 3.75m7.5-3.75l-.75 3.75M10.5 16.5l.25 3.75m2.5-3.75l-.25 3.75"
+      d="M12 6.75c-2.487-1.5-5.737-1.5-8.25 0v10.5c2.513-1.5 5.763-1.5 8.25 0m0-10.5v10.5m0-10.5c2.487-1.5 5.737-1.5 8.25 0v10.5c-2.513-1.5-5.763-1.5-8.25 0"
     />
   </svg>
 );

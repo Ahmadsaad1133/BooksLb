@@ -28,9 +28,9 @@ const AdminCollections = ({ bookstore }) => {
     return (
         <div>
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold font-serif text-rose-700">Manage Assortments</h2>
+                <h2 className="text-2xl font-bold font-serif text-rose-700">Manage Collections</h2>
                  <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-rose-500 text-white font-bold rounded-md hover:bg-rose-400 flex items-center gap-2">
-                    <PlusIcon className="h-5 w-5" /> Add Assortment
+                    <PlusIcon className="h-5 w-5" /> Add Collection
                 </button>
             </div>
             <div className="space-y-4">
@@ -38,7 +38,7 @@ const AdminCollections = ({ bookstore }) => {
                     <div key={collection.id} className="p-4 border border-rose-100 rounded-lg flex justify-between items-center bg-white">
                         <div>
                             <h3 className="font-bold text-rose-700">{collection.name}</h3>
-                            <p className="text-sm text-rose-600">{collection.bookIds.length} desserts</p>
+                            <p className="text-sm text-rose-600">{collection.bookIds?.length ?? 0} books</p>
                         </div>
                         <div className="flex gap-2">
                              <button onClick={() => handleOpenModal(collection)} className="text-rose-500 hover:text-rose-400"><PencilIcon className="h-5 w-5" /></button>

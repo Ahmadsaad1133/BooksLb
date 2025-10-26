@@ -37,16 +37,16 @@ const ContactForm: React.FC = () => {
         } catch (submissionError) {
             console.error('Failed to submit contact form', submissionError);
             setStatus('error');
-            setError('We could not send your message. Please try again or email hello@delipostres.com.');
+            setError('We could not send your message. Please try again or visit https://www.gutenberg.org/contact for assistance.');
         }
     };
 
   return (
     <section className="py-16 bg-rose-50">
       <div className="container mx-auto px-6 max-w-2xl text-center">
-        <h2 className="text-4xl font-bold mb-4 font-serif text-rose-700">Let's Chat Sweets</h2>
+        <h2 className="text-4xl font-bold mb-4 font-serif text-rose-700">Get in Touch</h2>
         <p className="text-rose-700/80 mb-8">
-            Planning a celebration or craving something special? Tell us how we can make your day sweeter.
+            Have a request for a specific public domain title or need help locating a Project Gutenberg record? We are happy to help fellow readers.
         </p>
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-lg text-left border border-rose-100">
             <div className="mb-6">
@@ -105,7 +105,7 @@ const ContactForm: React.FC = () => {
                     {status === 'submitting' ? 'Sending…' : 'Send Message'}
                 </button>
                 {status === 'success' && (
-                    <p className="mt-4 text-sm font-medium text-emerald-600">Thanks for reaching out! Our pastry team will reply within one business day.</p>
+                    <p className="mt-4 text-sm font-medium text-emerald-600">Thanks for reaching out! Our librarian team will reply within one business day.</p>
                 )}
                 {error && (
                     <p className="mt-4 text-sm font-medium text-red-500">{error}</p>

@@ -19,13 +19,14 @@ const OrderConfirmation = ({ lastOrder, onBackToStore }) => {
     <div className="bg-rose-50 min-h-screen py-12">
       <div className="container mx-auto px-6 max-w-3xl">
         <div className="bg-white p-8 md:p-12 rounded-xl shadow-lg text-center border border-rose-100">
-          <h2 className="text-4xl font-bold font-serif mb-4 text-rose-600">Thank You for Your Sweet Order!</h2>
-          <p className="text-rose-700/80 mb-6">Your desserts are being prepared with care. We'll reach out soon to confirm delivery details.</p>
+          <h2 className="text-4xl font-bold font-serif mb-4 text-rose-600">Your ebooks are on their way!</h2>
+          <p className="text-rose-700/80 mb-6">We will email you links to the Project Gutenberg editions included below. Feel free to start another search anytime.</p>
           <div className="text-left bg-rose-50 p-6 rounded-md border border-rose-100 my-8">
             <h3 className="text-xl font-bold font-serif mb-4 text-rose-700">Order Summary (ID: {lastOrder.id})</h3>
             <div className="mb-4 space-y-1 text-rose-700">
               <p><strong>Name:</strong> {lastOrder.customer.name}</p>
-              <p><strong>Address:</strong> {lastOrder.customer.address}</p>
+              {lastOrder.customer.email && <p><strong>Email:</strong> {lastOrder.customer.email}</p>}
+              {lastOrder.customer.address && <p><strong>Mailing Address:</strong> {lastOrder.customer.address}</p>}
             </div>
             {lastOrder.items.map(item => (
                 <div key={item.id} className="flex justify-between items-center py-2 border-b">
@@ -42,7 +43,7 @@ const OrderConfirmation = ({ lastOrder, onBackToStore }) => {
             onClick={onBackToStore}
             className="mt-6 px-10 py-3 bg-rose-500 text-white font-bold rounded-full hover:bg-rose-400 transition-transform transform hover:scale-105 duration-300 shadow-lg"
           >
-            Back to Menu
+            Back to Catalog
           </button>
         </div>
       </div>
