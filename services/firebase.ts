@@ -16,6 +16,8 @@ import {
     type Unsubscribe,
     type QueryDocumentSnapshot,
     type DocumentData,
+    type CollectionReference,
+    type DocumentReference,
 } from 'firebase/firestore';
 
 import type { Book, BookInput, PageContent } from '../types';
@@ -29,12 +31,27 @@ const firebaseConfig = {
     appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
 };
 
-const firebaseApp: FirebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const isFirebaseConfigured = Object.values(firebaseConfig).every(
+    (value) => typeof value === 'string' && value.trim().length > 0,
+);
 
-export const db: Firestore = getFirestore(firebaseApp);
+let firebaseApp: FirebaseApp | null = null;
+let firestoreDb: Firestore | null = null;
+let booksCollection: CollectionReference<DocumentData> | null = null;
+let pageContentDocRef: DocumentReference<DocumentData> | null = null;
 
-const booksCollection = collection(db, 'books');
-const pageContentDocRef = doc(db, 'pageContent', 'home');
+if (isFirebaseConfigured) {
+    firebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
+    firestoreDb = getFirestore(firebaseApp);
+    booksCollection = collection(firestoreDb, 'books');
+    pageContentDocRef = doc(firestoreDb, 'pageContent', 'home');
+} else {
+    console.warn(
+        'Firebase environment variables are not configured. Falling back to local data only.',
+    );
+}
+
+export const db = firestoreDb;
 const mapSnapshotToBook = (snapshot: QueryDocumentSnapshot<DocumentData>): Book => {
     const data = snapshot.data();
     const rawId = typeof data.id === 'string' ? data.id : '';
@@ -59,6 +76,10 @@ const mapDataToPageContent = (data: DocumentData): PageContent => ({
     logoImage: typeof data.logoImage === 'string' ? data.logoImage : '',
 });
 export const fetchBooks = async (): Promise<Book[]> => {
+    if (!booksCollection) {
+        return [];
+    }
+
     const booksQuery = query(booksCollection, orderBy('title', 'asc'));
     const snapshot = await getDocs(booksQuery);
     return snapshot.docs.map(mapSnapshotToBook);
@@ -68,6 +89,10 @@ export const subscribeToBooks = (
     onBooks: (books: Book[]) => void,
     onError?: (error: Error) => void,
 ): Unsubscribe => {
+    if (!booksCollection) {
+        const timeoutId = setTimeout(() => onBooks([]), 0);
+        return () => clearTimeout(timeoutId);
+    }
     const booksQuery = query(booksCollection, orderBy('title', 'asc'));
 
     return onSnapshot(
@@ -83,6 +108,10 @@ export const subscribeToBooks = (
     );
 };
 export const fetchPageContent = async (): Promise<PageContent | null> => {
+    if (!pageContentDocRef) {
+        return null;
+    }
+
     const snapshot = await getDoc(pageContentDocRef);
 
     if (!snapshot.exists()) {
@@ -96,6 +125,10 @@ export const subscribeToPageContent = (
     onContent: (content: PageContent) => void,
     onError?: (error: Error) => void,
 ): Unsubscribe => {
+    if (!pageContentDocRef) {
+        const timeoutId = setTimeout(() => onContent(mapDataToPageContent({})), 0);
+        return () => clearTimeout(timeoutId);
+    }
     return onSnapshot(
         pageContentDocRef,
         (snapshot) => {
@@ -114,6 +147,10 @@ export const subscribeToPageContent = (
 };
 
 export const savePageContent = async (content: PageContent): Promise<void> => {
+    if (!pageContentDocRef) {
+        return;
+    }
+
     await setDoc(
         pageContentDocRef,
         {
@@ -125,6 +162,9 @@ export const savePageContent = async (content: PageContent): Promise<void> => {
 };
 
 export const addBook = async (book: BookInput): Promise<string> => {
+    if (!booksCollection) {
+        return `local_${Date.now()}`;
+    }
     const docRef = doc(booksCollection);
     await setDoc(docRef, {
         ...book,
@@ -138,6 +178,9 @@ export const addBook = async (book: BookInput): Promise<string> => {
 };
 
 export const updateBook = async (book: Book): Promise<void> => {
+    if (!booksCollection) {
+        return;
+    }
     const { id, ...data } = book;
     const docRef = doc(booksCollection, String(id));
     await updateDoc(docRef, {
@@ -149,6 +192,9 @@ export const updateBook = async (book: Book): Promise<void> => {
     });
 };
 export const updatePageContent = async (content: PageContent): Promise<void> => {
+    if (!pageContentDocRef) {
+        return;
+    }
     await setDoc(
         pageContentDocRef,
         {
@@ -159,11 +205,17 @@ export const updatePageContent = async (content: PageContent): Promise<void> => 
     );
 };
 export const deleteBook = async (bookId: string | number): Promise<void> => {
+    if (!booksCollection) {
+        return;
+    }
     const docRef = doc(booksCollection, String(bookId));
     await deleteDoc(docRef);
 };
 
 export const seedBook = async (book: Book): Promise<void> => {
+    if (!booksCollection) {
+        return;
+    }
     const docRef = doc(booksCollection, String(book.id));
     await setDoc(docRef, {
         ...book,
