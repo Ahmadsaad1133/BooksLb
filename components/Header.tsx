@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
 import { CupcakeIcon, ShoppingCartIcon, UserIcon, ClipboardListIcon, MenuIcon, XIcon } from './Icons';
-const Header = ({
+interface HeaderProps {
+    onHomeClick: () => void;
+    onBooksClick: () => void;
+    onAboutClick: () => void;
+    onContactClick: () => void;
+    onCartClick: () => void;
+    onLoginClick: () => void;
+    onLogoutClick: () => void;
+    onAdminClick: () => void;
+    cartCount: number;
+    isOwnerLoggedIn: boolean;
+    logoImage?: string;
+}
+
+const Header: React.FC<HeaderProps> = ({
     onHomeClick, onBooksClick, onAboutClick, onContactClick,
     onCartClick, onLoginClick, onLogoutClick, onAdminClick,
     cartCount, isOwnerLoggedIn, logoImage
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleNavigate = (callback) => {
-    if (typeof callback === 'function') {
-      callback();
-    }
+  const handleNavigate = (callback: () => void) => {
+    callback();
     setIsMenuOpen(false);
   };
 

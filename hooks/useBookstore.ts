@@ -93,46 +93,63 @@ export const useBookstore = () => {
     useEffect(() => { setInStorage('pageContent', pageContent); }, [pageContent]);
     useEffect(() => {
         let unsubscribe: ReturnType<typeof subscribeToPageContent> | undefined;
+        let isMounted = true;
 
-        try {
-            unsubscribe = subscribeToPageContent(
-                (content) => {
-                    setPageContent((current) => {
-                        const normalizedContent = normalizePageContent(content);
-                        const hasChanges =
-                            current.heroTitle !== normalizedContent.heroTitle ||
-                            current.heroSubtitle !== normalizedContent.heroSubtitle ||
-                            current.heroImage !== normalizedContent.heroImage ||
-                            current.aboutContent !== normalizedContent.aboutContent ||
-                            current.logoImage !== normalizedContent.logoImage;
+        const applyContent = (content: PageContent) => {
+            setPageContent((current) => {
+                const normalizedContent = normalizePageContent(content);
+                const hasChanges =
+                    current.heroTitle !== normalizedContent.heroTitle ||
+                    current.heroSubtitle !== normalizedContent.heroSubtitle ||
+                    current.heroImage !== normalizedContent.heroImage ||
+                    current.aboutContent !== normalizedContent.aboutContent ||
+                    current.logoImage !== normalizedContent.logoImage;
 
-                        return hasChanges ? normalizedContent : current;
-                    });
-                },
-                (error) => {
-                    console.error('Failed to subscribe to Firestore page content:', error);
-                },
-            );
-        } catch (error) {
-            console.error('Error setting up Firestore page content subscription:', error);
-        }
-
-        (async () => {
+                return hasChanges ? normalizedContent : current;
+            });
+        };
+        const hydrateContent = async () => {
             try {
                 const existingContent = await fetchPageContentFromFirestore();
+                if (!isMounted) {
+                    return;
+                }
 
                 if (existingContent) {
-                    setPageContent(normalizePageContent(existingContent));
+                    applyContent(existingContent);
                 } else {
                     await savePageContentToFirestore(INITIAL_PAGE_CONTENT);
-                    setPageContent(INITIAL_PAGE_CONTENT);
+                    if (isMounted) {
+                        setPageContent(INITIAL_PAGE_CONTENT);
+                    }
                 }
             } catch (error) {
                 console.error('Failed to initialize Firestore page content:', error);
             }
-        })();
+        };
+
+        const subscribe = () => {
+            try {
+                unsubscribe = subscribeToPageContent(
+                    (content) => {
+                        if (isMounted) {
+                            applyContent(content);
+                        }
+                    },
+                    (error) => {
+                        console.error('Failed to subscribe to Firestore page content:', error);
+                    },
+                );
+            } catch (error) {
+                console.error('Error setting up Firestore page content subscription:', error);
+            }
+        };
+
+        hydrateContent();
+        subscribe();
 
         return () => {
+            isMounted = false;
             unsubscribe?.();
         };
     }, []);
@@ -161,8 +178,9 @@ export const useBookstore = () => {
                 const existingBooks = await fetchBooksFromFirestore();
                 if (existingBooks.length === 0) {
                     await Promise.all(initialBooks.map((book) => seedBookInFirestore(book)));
-                             } else {
-                    setBooks(existingBooks.map((book) => normalizeBook(book)));       
+                    setBooks(initialBooks);
+                } else {
+                    setBooks(existingBooks.map((book) => normalizeBook(book))); 
                 }
                 hasSeededRef.current = true;
             } catch (error) {
@@ -172,39 +190,6 @@ export const useBookstore = () => {
 
         return () => {
             unsubscribe();
-        };
-    }, []);
-        useEffect(() => {
-        let unsubscribe: (() => void) | undefined;
-
-        try {
-            unsubscribe = subscribeToPageContent(
-                (content) => {
-                    if (content) {
-                        setPageContent(normalizePageContent(content));
-                    }
-                },
-                (error) => {
-                    console.error('Failed to subscribe to Firestore page content:', error);
-                },
-            );
-        } catch (error) {
-            console.error('Failed to initialize Firestore page content subscription:', error);
-        }
-
-        (async () => {
-            try {
-                const firestoreContent = await fetchPageContentFromFirestore();
-                if (firestoreContent) {
-                    setPageContent(normalizePageContent(firestoreContent));
-                }
-            } catch (error) {
-                console.error('Failed to fetch page content from Firestore:', error);
-            }
-        })();
-
-        return () => {
-            unsubscribe?.();
         };
     }, []);
     // Cart management
