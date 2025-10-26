@@ -28,17 +28,17 @@ const AdminBooks = ({ bookstore }) => {
     return (
         <div>
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold font-serif text-rose-700">Manage Desserts</h2>
+                <h2 className="text-2xl font-bold font-serif text-rose-700">Manage Books</h2>
                 <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-rose-500 text-white font-bold rounded-md hover:bg-rose-400 flex items-center gap-2">
-                    <PlusIcon className="h-5 w-5" /> Add Dessert
+                    <PlusIcon className="h-5 w-5" /> Add Book
                 </button>
             </div>
              <div className="overflow-x-auto">
                 <table className="w-full text-left">
                     <thead>
                         <tr className="border-b border-rose-100">
-                            <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Dessert</th>
-                            <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Flavor Notes</th>
+                            <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Book</th>
+                            <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Author</th>
                             <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Price</th>
                             <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Stock</th>
                             <th className="p-2 text-rose-500 uppercase text-xs tracking-wide">Actions</th>

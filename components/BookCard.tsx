@@ -14,7 +14,7 @@ const BookCard = ({ book, onSelectBook, onAddToCart }) => {
       <div className="relative">
         <img src={book.coverImage} alt={book.title} className="w-full h-80 object-cover" />
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-            <span className="text-white font-bold border-2 border-white rounded-full px-4 py-2">View Dessert</span>
+            <span className="text-white font-bold border-2 border-white rounded-full px-4 py-2">View Book</span>
         </div>
       </div>
       <div className="p-4 flex flex-col flex-grow">
@@ -32,7 +32,7 @@ const BookCard = ({ book, onSelectBook, onAddToCart }) => {
                 className="bg-rose-100 text-rose-700 hover:bg-rose-200 text-xs font-bold py-2 px-3 rounded-full transition-colors duration-200"
                 aria-label={`Add ${book.title} to cart`}
             >
-                Add to Order
+                Add to Cart
             </button>
         </div>
       </div>

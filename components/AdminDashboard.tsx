@@ -33,12 +33,12 @@ const AdminDashboard = ({ bookstore }) => {
     return (
         <div className="bg-rose-50 min-h-screen">
             <div className="container mx-auto px-6 py-8">
-                <h1 className="text-3xl font-bold font-serif mb-6 text-rose-700">Deli Postres Admin</h1>
+                <h1 className="text-3xl font-bold font-serif mb-6 text-rose-700">Public Domain Bookshelf Admin</h1>
                 <div className="bg-white rounded-lg shadow-lg p-4 mb-6 border border-rose-100">
                     <nav className="flex flex-wrap gap-2">
                         <button onClick={() => setActiveTab('orders')} className={getTabClass('orders')}>Orders</button>
-                        <button onClick={() => setActiveTab('books')} className={getTabClass('books')}>Desserts</button>
-                        <button onClick={() => setActiveTab('collections')} className={getTabClass('collections')}>Assortments</button>
+                        <button onClick={() => setActiveTab('books')} className={getTabClass('books')}>Books</button>
+                        <button onClick={() => setActiveTab('collections')} className={getTabClass('collections')}>Collections</button>
                         <button onClick={() => setActiveTab('content')} className={getTabClass('content')}>Page Content</button>
                     </nav>
                 </div>

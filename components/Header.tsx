@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CupcakeIcon, ShoppingCartIcon, UserIcon, ClipboardListIcon, MenuIcon, XIcon } from './Icons';
+import { BookIcon, ShoppingCartIcon, UserIcon, ClipboardListIcon, MenuIcon, XIcon } from './Icons';
 interface HeaderProps {
     onHomeClick: () => void;
     onBooksClick: () => void;
@@ -34,17 +34,17 @@ const Header: React.FC<HeaderProps> = ({
           onClick={() => handleNavigate(onHomeClick)}
         >
           {logoImage ? (
-            <img src={logoImage} alt="Deli Postres logo" className="h-9 w-9 object-contain" />
+            <img src={logoImage} alt="Public Domain Bookshelf logo" className="h-9 w-9 object-contain" />
           ) : (
-            <CupcakeIcon className="h-9 w-9 text-rose-500" />
+            <BookIcon className="h-9 w-9 text-rose-500" />
           )}
-          <h1 className="text-2xl font-bold text-rose-700 font-serif tracking-wide">Deli Postres</h1>
+          <h1 className="text-2xl font-bold text-rose-700 font-serif tracking-wide">Public Domain Bookshelf</h1>
         </div>
         <div className="flex items-center space-x-6">
             <nav className="hidden md:flex items-center space-x-8">
               <button onClick={() => handleNavigate(onHomeClick)} className="text-rose-700 hover:text-rose-500 transition duration-300 font-medium">Home</button>
-              <button onClick={() => handleNavigate(onBooksClick)} className="text-rose-700 hover:text-rose-500 transition duration-300 font-medium">Menu</button>
-              <button onClick={() => handleNavigate(onAboutClick)} className="text-rose-700 hover:text-rose-500 transition duration-300 font-medium">Our Story</button>
+              <button onClick={() => handleNavigate(onBooksClick)} className="text-rose-700 hover:text-rose-500 transition duration-300 font-medium">Catalog</button>
+              <button onClick={() => handleNavigate(onAboutClick)} className="text-rose-700 hover:text-rose-500 transition duration-300 font-medium">About</button>
               <button onClick={() => handleNavigate(onContactClick)} className="text-rose-700 hover:text-rose-500 transition duration-300 font-medium">Contact</button>
             </nav>
             <div className="flex items-center space-x-4 border-l border-rose-100 pl-6">
@@ -92,13 +92,13 @@ const Header: React.FC<HeaderProps> = ({
               onClick={() => handleNavigate(onBooksClick)}
               className="block w-full text-left text-rose-700 hover:text-rose-500 font-medium"
             >
-              Menu
+              Catalog
             </button>
             <button
               onClick={() => handleNavigate(onAboutClick)}
               className="block w-full text-left text-rose-700 hover:text-rose-500 font-medium"
             >
-              Our Story
+              About
             </button>
             <button
               onClick={() => handleNavigate(onContactClick)}
@@ -107,13 +107,13 @@ const Header: React.FC<HeaderProps> = ({
               Contact
             </button>
             <a
-              href="https://wa.me/96171725739"
+              href="https://www.gutenberg.org/"
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setIsMenuOpen(false)}
               className="mt-2 block w-full text-center rounded-md bg-rose-600 py-2 text-white font-semibold shadow hover:bg-rose-500 transition duration-300"
             >
-              Contact us via WhatsApp
+              Visit Project Gutenberg
             </a>
           </div>
         )}

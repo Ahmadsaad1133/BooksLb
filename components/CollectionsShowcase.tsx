@@ -31,10 +31,10 @@ const CollectionsShowcase: React.FC<CollectionsShowcaseProps> = ({ collections, 
             <div className="container mx-auto px-6">
                 <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
                     <div>
-                        <p className="text-sm uppercase tracking-widest text-rose-500 font-semibold">Our Categories</p>
-                        <h2 className="text-3xl sm:text-4xl font-serif font-bold text-rose-800">Explore Desserts by Collection</h2>
+                        <p className="text-sm uppercase tracking-widest text-rose-500 font-semibold">Curated Collections</p>
+                        <h2 className="text-3xl sm:text-4xl font-serif font-bold text-rose-800">Explore Books by Collection</h2>
                         <p className="mt-2 text-rose-600 max-w-2xl">
-                            Browse curated assortments to discover desserts grouped by occasion, flavor profile, or serving style.
+                            Browse librarian-picked groupings to discover public domain works organized by theme, genre, or author.
                         </p>
                     </div>
                 </div>
@@ -66,7 +66,7 @@ const CollectionsShowcase: React.FC<CollectionsShowcaseProps> = ({ collections, 
                                 <div className="flex flex-col gap-3 p-6">
                                     <div>
                                         <h3 className="text-xl font-serif font-semibold text-rose-800">{collection.name}</h3>
-                                        <p className="text-sm text-rose-600">{collection.bookIds?.length ?? 0} desserts included</p>
+                                        <p className="text-sm text-rose-600">{collection.bookIds?.length ?? 0} books included</p>
                                     </div>
                                     {previewGenre && (
                                         <span className="inline-flex w-max items-center rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-rose-600">
@@ -81,7 +81,7 @@ const CollectionsShowcase: React.FC<CollectionsShowcaseProps> = ({ collections, 
                                         onClick={() => onExploreCollection?.(collection)}
                                         className="mt-2 inline-flex items-center justify-center rounded-full bg-rose-500 px-4 py-2 text-sm font-semibold text-white transition-colors duration-200 hover:bg-rose-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
                                     >
-                                        View Desserts
+                                        View Books
                                     </button>
                                 </div>
                             </article>

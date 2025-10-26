@@ -4,13 +4,13 @@ const CartView = ({ cartItems, cartTotal, onUpdateQuantity, onRemoveItem, onChec
   if (cartItems.length === 0) {
     return (
       <div className="container mx-auto px-6 py-16 text-center">
-        <h2 className="text-4xl font-bold font-serif text-rose-700 mb-4">Your Dessert Box is Empty</h2>
-        <p className="text-rose-700/80 mb-8">Looks like you haven't added any sweets yet. Let's pick something delicious!</p>
+        <h2 className="text-4xl font-bold font-serif text-rose-700 mb-4">Your Reading List is Empty</h2>
+        <p className="text-rose-700/80 mb-8">Browse the catalog to add real public domain titles to your personal bundle.</p>
         <button
           onClick={onContinueShopping}
           className="px-8 py-3 bg-rose-500 text-white font-bold rounded-full hover:bg-rose-400 transition-transform transform hover:scale-105 duration-300 shadow-lg"
         >
-          Browse Desserts
+          Browse Books
         </button>
       </div>
     );
@@ -19,7 +19,7 @@ const CartView = ({ cartItems, cartTotal, onUpdateQuantity, onRemoveItem, onChec
   return (
     <div className="bg-rose-50 min-h-screen py-12">
       <div className="container mx-auto px-6">
-        <h2 className="text-4xl font-bold font-serif mb-8 text-center text-rose-700">Your Sweet Selections</h2>
+        <h2 className="text-4xl font-bold font-serif mb-8 text-center text-rose-700">Your Selected Books</h2>
         <div className="bg-white shadow-lg rounded-xl p-6 md:p-8 border border-rose-100">
           {cartItems.map(item => (
             <div key={item.id} className="flex flex-col sm:flex-row items-center justify-between py-4 border-b border-rose-100">
@@ -47,7 +47,7 @@ const CartView = ({ cartItems, cartTotal, onUpdateQuantity, onRemoveItem, onChec
           ))}
             <div className="mt-8 text-right">
             <h3 className="text-2xl font-bold text-rose-700">Total: <span className="text-rose-500">${cartTotal.toFixed(2)}</span></h3>
-            <p className="text-rose-700/80 text-sm">Delivery details will be confirmed at checkout.</p>
+            <p className="text-rose-700/80 text-sm">Download details will be confirmed at checkout.</p>
             <button
               onClick={onCheckout}
               className="mt-6 px-10 py-3 bg-rose-500 text-white font-bold rounded-full hover:bg-rose-400 transition-transform transform hover:scale-105 duration-300 shadow-lg"

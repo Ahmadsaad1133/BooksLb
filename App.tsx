@@ -26,7 +26,7 @@ const App = () => {
     const featuredBooks = featuredIds.size
         ? bookstore.books.filter(b => featuredIds.has(String(b.id)))
         : bookstore.books.slice(0, 4);
-    const featuredTitle = featuredCollection?.name ?? 'Featured Desserts';
+    const featuredTitle = featuredCollection?.name ?? 'Featured Books';
     const handleSelectBook = (book) => {
         setSelectedBook(book);
     };
@@ -92,7 +92,7 @@ const App = () => {
                  return (
                     <div className="container mx-auto px-6 py-12">
                         <FeaturedBooks
-                            title="All Desserts"
+                            title="All Books"
                             books={bookstore.books}
                             onSelectBook={handleSelectBook}
                             onAddToCart={handleAddToCart}

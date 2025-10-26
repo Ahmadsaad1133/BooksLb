@@ -30,13 +30,11 @@ const AdminOrders = ({ bookstore }) => {
                 <td className="p-2 font-medium text-rose-700">${order.total.toFixed(2)}</td>
                 <td className="p-2">
                    <select value={order.status} onChange={(e) => handleStatusChange(order.id, e)} className="p-1 border border-rose-200 rounded-md text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-400">
-                        <option>Preparing</option>
-                        <option>Ready</option>
-                        <option>Out for Delivery</option>
-                        <option>Delivered</option>
-                        <option>Cancelled</option>
+                        <option>Processing</option>
+                        <option>Download Sent</option>
+                        <option>Completed</option>
                         <option>Pending</option>
-                        <option>Shipped</option>
+                        <option>Cancelled</option>
                    </select>
                 </td>
               </tr>

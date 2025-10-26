@@ -51,8 +51,8 @@ const normalizePageContent = (content: Partial<PageContent> = {}): PageContent =
 
 const PLACEHOLDER_COLLECTION_NAMES = new Set([
     'Bestsellers',
-    "Chef's Favorites",
-    'Party-Ready Boxes',
+    'Staff Picks',
+    'Seasonal Highlights',
 ]);
 const normalizeCartItem = <T extends { id: string | number }>(item: T) => ({
     ...item,
@@ -169,7 +169,7 @@ export const useBookstore = () => {
                 }
             },
             (error) => {
-                console.error('Failed to subscribe to Firestore desserts:', error);
+                console.error('Failed to subscribe to Firestore books:', error);
             },
         );
 
@@ -237,7 +237,7 @@ export const useBookstore = () => {
             items: cart,
             total: cartTotal,
             date: new Date().toISOString(),
-            status: 'Preparing',
+            status: 'Processing',
         };
         setOrders(prevOrders => [newOrder, ...prevOrders]);
         clearCart();
@@ -277,7 +277,7 @@ export const useBookstore = () => {
                 return nextBooks.sort((a, b) => a.title.localeCompare(b.title));
             });
         } catch (error) {
-            console.error('Failed to add dessert to Firestore, falling back to local storage:', error);
+                console.error('Failed to add book to Firestore, falling back to local storage:', error);
             const fallbackId = `local_${Date.now()}`;
             const normalizedBook = normalizeBook({ ...normalizedInput, id: fallbackId } as Book);
             setBooks((prevBooks) => {
@@ -303,7 +303,7 @@ export const useBookstore = () => {
                 ...normalizedBook,
             });
         } catch (error) {
-            console.error('Failed to update dessert in Firestore, changes kept locally:', error);
+                console.error('Failed to update book in Firestore, changes kept locally:', error);
         }
     };
 
@@ -315,7 +315,7 @@ export const useBookstore = () => {
         try {
             await deleteBookFromFirestore(bookId);
         } catch (error) {
-            console.error('Failed to delete dessert from Firestore, keeping local list updated:', error);
+                console.error('Failed to delete book from Firestore, keeping local list updated:', error);
         }
     };
 
